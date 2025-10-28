@@ -29,6 +29,22 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
   }
 
+  // Destination should be id of the "route" (as in the id of the element we are swapping to)
+  // this is just simulating routing
+  // TODO: test this function
+  function route(destination) {
+    const pages = document.querySelectorAll("main > *");
+    for(const page of pages) {
+      if(page.id != destination) {
+        page.classList.remove("block");
+        page.classList.add("hidden");
+      } else {
+        page.classList.remove("hidden");
+        page.classList.add("block");
+      }
+    }
+  }
+
   // Might actually have to count all cart items, less efficient, but less error prone.
   function addToCart() {
     const cartCounter = document.querySelector("#cart-counter");
