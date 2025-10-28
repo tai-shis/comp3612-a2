@@ -4,13 +4,52 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+        <title>COMP3612 Assignment 2</title>
+
+        <!-- Font Awesome -->
+        <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel='stylesheet'> -->
+        <!-- Font -->
+        <link href="https://fonts.googleapis.com/css2?family=Nova+Mono&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+        <style type="text/tailwindcss">
+            /* Global Styles */
+            :root {
+                font-family: 'Oswald', sans-serif;
+            }
+
+            /* Tailwind Variables */
+            @theme {
+            
+            }
+
+        </style>
     </head>
     <body>
-        <header>
+        <header class="flex flex-row my-6 mx-16 max-w-dvw">
+            <button class="text-4xl font-medium">Logo</button> <!-- placeholder -->
+            <nav class="text-2xl font-normal m-auto">
+                <button>Home</button> |
+                <button>Women</button> |
+                <button>Men</button> |
+                <button>Browse</button> |
+                <button>About</button>
+            </nav> 
 
+            <!-- span of this button will be changed dynamically -->
+            <button id="header-cart" class="text-2xl font-normal justify-right my-auto">
+                Cart <span id="cart-counter" class="text-lg mx-2 bg-blue-500 border-blue-500 rounded-full">0</span>
+            </button>
         </header>
         <main>
-            Hello World
+            <div id="test">
+
+                
+            </div>
+            <!-- Add dynamic pages/popups here as articles/dialogs -->
+            <article id="home"></article>
+            <article id="browser"></article>
+            <article id="singleproduct"></article>
+            <dialog id="about"></dialog>
         </main>
         <footer>
             
