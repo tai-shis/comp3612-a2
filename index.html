@@ -19,7 +19,13 @@
 
             /* Tailwind Variables */
             @theme {
-            
+
+            }
+
+            @layer components {
+                .link {
+                    @apply hover:underline hover:cursor-pointer;
+                }
             }
 
         </style>
@@ -27,33 +33,56 @@
     <body>
         <header class="flex flex-row my-6 mx-16 max-w-dvw">
             <button class="text-4xl font-medium">Logo</button> <!-- placeholder -->
-            <nav class="text-2xl font-normal m-auto">
-                <button>Home</button> |
-                <button>Women</button> |
-                <button>Men</button> |
-                <button>Browse</button> |
-                <button>About</button>
-            </nav> 
+            <nav id="nav" class="text-2xl font-normal m-auto">
+                <button route="home" class="link">Home</button> |
+                <button route="women" class="link">Women</button> |
+                <button route="men" class="link">Men</button> |
+                <button route="browser" class="link">Browse</button> |
+                <button route="about" class="link">About</button>
+            </nav>
 
             <!-- span of this button will be changed dynamically -->
             <button id="header-cart" class="text-2xl font-normal justify-right my-auto">
-                Cart <span id="cart-counter" class="text-lg mx-2 bg-blue-500 border-blue-500 rounded-full">0</span>
+                Cart <span id="cart-counter" class="text-lg my-auto px-2 bg-blue-500 border-blue-500 rounded-full">0</span>
             </button>
         </header>
         <main>
-            <div id="test">
-
-                
-            </div>
+           
             <!-- Add dynamic pages/popups here as articles/dialogs -->
-            <article id="home"></article>
-            <article id="browser"></article>
-            <article id="singleproduct"></article>
+            <article class="block" id="home"> 
+                <div id="test">
+
+                </div>
+            </article>
+            <article class="hidden" id="browser"></article>
+            <article class="hidden" id="singleproduct"></article>
             <dialog id="about"></dialog>
         </main>
         <footer>
             
         </footer>
         <script src="index.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const buttons = document.querySelectorAll("#nav button").forEach((b) => b.addEventListener("click", route));
+            });
+
+            // Destination should be id of the "route" (as in the id of the element we are swapping to)
+            // this is just simulating routing
+            // TODO: test this function
+            function route(e) {
+                const pages = document.querySelectorAll("main > *");
+                for(const page of pages) {
+                    console.log(page.id, e.target.getAttribute("route"));
+                    if(page.id != e.target.getAttribute("route")) {
+                        page.classList.remove("block");
+                        page.classList.add("hidden");
+                    } else {
+                        page.classList.remove("hidden");
+                        page.classList.add("block");
+                    }
+                }
+            }
+        </script>
     </body>
 </html>
