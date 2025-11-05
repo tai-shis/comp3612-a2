@@ -29,20 +29,46 @@
             }
 
         </style>
+        <script src="index.js" type="module"></script>
+        <script>
+            // Test scripts
+            
+            document.addEventListener("DOMContentLoaded", () => {
+                // this listener should be a parent event handler
+                const buttons = document.querySelectorAll("header button").forEach((b) => b.addEventListener("click", route));
+            });
+
+            // Destination should be id of the "route" (as in the id of the element we are swapping to)
+            // this is just simulating routing
+            // this broke, fix later
+            function route(e) {
+                const pages = document.querySelectorAll("main > *");
+                for(const page of pages) {
+                    console.log(page.id, e.target.dataset.route);
+                    if(page.id != e.target.dataset.route) {
+                        page.classList.remove("block");
+                        page.classList.add("hidden");
+                    } else {
+                        page.classList.remove("hidden");
+                        page.classList.add("block");
+                    }
+                } 
+            }
+        </script>
     </head>
     <body>
         <header class="flex flex-row my-6 mx-16 max-w-dvw">
-            <button class="text-4xl font-medium">Logo</button> <!-- placeholder -->
+            <button data-route="home" class="text-4xl font-medium">Logo</button> <!-- placeholder -->
             <nav id="nav" class="text-2xl font-normal m-auto">
-                <button route="home" class="link">Home</button> |
-                <button route="women" class="link">Women</button> |
-                <button route="men" class="link">Men</button> |
-                <button route="browser" class="link">Browse</button> |
-                <button route="about" class="link">About</button>
+                <button data-route="home" class="link">Home</button> |
+                <button data-route="women" class="link">Women</button> |
+                <button data-route="men" class="link">Men</button> |
+                <button data-route="browser" class="link">Browse</button> |
+                <button data-route="about" class="link">About</button>
             </nav>
 
             <!-- span of this button will be changed dynamically -->
-            <button id="header-cart" class="text-2xl font-normal justify-right my-auto">
+            <button data-route="cart" id="header-cart" class="link text-2xl font-normal justify-right my-auto">
                 Cart <span id="cart-counter" class="text-lg my-auto px-2 bg-blue-500 border-blue-500 rounded-full">0</span>
             </button>
         </header>
@@ -50,61 +76,52 @@
            
             <!-- Add dynamic pages/popups here as articles/dialogs -->
             <article class="block" id="home"> 
-            </article>
-            <article class="block" id="singleproduct">
-                <div class="px-6">
-                    <div id="test">
-                        <p id="breadcrumb" class="px-2 py-4 text-md">
-                            <!-- set event handlers for all of these -->
-                            <button id="crumb-home" class="link underline">Home</button> >
-                            <button id="crumb-gender" class="link underline">Gender</button> > <!-- Populate the route and text content with JS-->
-                            <button id="crumb-category" class="link underline">Category</button> > <!-- This too -->
-                            <span id="crumb-product">Product</span> <!-- This one isn't a link, just change text content-->
-                        </p>
-                        <div id="product" class="flex flex-row gap-6">
-                            <div id="product-images" class="flex flex-col">
-                                <img id="product-images-main" class="flex w-full h-2/3 mb-4">
-                                <div id="product-images-sub" class="flex flex-row w-full h-1/3 gap-4 mt-4">
-                                    <img class="flex w-1/2">
-                                    <img class="flex w-1/2">
-                                </div>
-                            </div>
-                            <div id="product-description" class="">
-
-                            </div>
-                        </div>
-                    </div>
+                <div id="test">
 
                 </div>
+            </article>
+            <article class="hidden" id="singleproduct">
+                <div class="px-6">
+                    <p id="breadcrumb" class="px-2 py-4 text-md">
+                        <!-- set event handlers for all of these -->
+                        <button id="crumb-home" class="link underline">Home</button> >
+                        <button id="crumb-gender" class="link underline">Gender</button> > <!-- Populate the route and text content with JS-->
+                        <button id="crumb-category" class="link underline">Category</button> > <!-- This too -->
+                        <span id="crumb-product">Product</span> <!-- This one isn't a link, just change text content-->
+                    </p>
+                    <div id="product" class="flex flex-row gap-6">
+                        <div id="product-images" class="flex flex-col">
+                            <img id="product-images-main" class="flex w-full h-2/3 mb-4">
+                            <div id="product-images-sub" class="flex flex-row w-full h-1/3 gap-4 mt-4">
+                                <img class="flex w-1/2">
+                                <img class="flex w-1/2">
+                            </div>
+                        </div>
+                        <div id="product-description" class="">
+                            <!-- put the header for items here! -->
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <article class="hidden" id="cart">
+                <div id="cart-items"></div>
             </article>
             <article class="hidden" id="browser"></article>
             <dialog id="about"></dialog>
         </main>
         <footer>
-            
         </footer>
-        <script src="index.js"></script>
-        <script>
-            // Test scripts
-            document.addEventListener("DOMContentLoaded", () => {
-                const buttons = document.querySelectorAll("#nav button").forEach((b) => b.addEventListener("click", route));
-            });
 
-            // Destination should be id of the "route" (as in the id of the element we are swapping to)
-            // this is just simulating routing
-            function route(e) {
-                const pages = document.querySelectorAll("main > *");
-                for(const page of pages) {
-                    console.log(page.id, e.target.getAttribute("route"));
-                    if(page.id != e.target.getAttribute("route")) {
-                        page.classList.remove("block");
-                        page.classList.add("hidden");
-                    } else {
-                        page.classList.remove("hidden");
-                        page.classList.add("block");
-                    }
-                }
-            }
-        </script>
+        <template id="cart-item-template">
+            <div class="cart-item flex flex-row">
+                <button class="remove-item border bg-grey-500 px-4">-</button>
+                <span class="item-name"></span>
+                <span class="item-color"></span>
+                <span class="item-size"></span>
+                <span class="item-price"></span>
+                <span class="item-quantity"></span>
+                <span class="item-subtotal"></span>
+            </div>
+        </template>    
     </body>
 </html>

@@ -1,4 +1,6 @@
-document.addEventListener('DOMContentLoaded', async function() {
+import { addToCart, removeFromCart, renderCart } from "./cart.js";
+
+document.addEventListener('DOMContentLoaded', () => {
   const fetchURL = `https://gist.githubusercontent.com/rconnolly/d37a491b50203d66d043c26f33dbd798/raw/37b5b68c527ddbe824eaed12073d266d5455432a/clothing-compact.json`;
   
   let items = JSON.parse(localStorage.getItem('items'));
@@ -17,58 +19,37 @@ document.addEventListener('DOMContentLoaded', async function() {
   } else {
     const items = JSON.parse(localStorage.getItem('items'));
     render(items)
+    renderCart();
   }
  
-  let cart = JSON.parse(localStorage.getItem('cart')) || []; // Initialize cart from localStorage if available or make new empty array
- 
-  // This functions should actually pre-render the entire page content, hiding everything except the home.
-  function render(items) {
-    const test = document.querySelector("#test");
-    test.innerHTML = '';
-    for(const item of items) {
-      const div = document.createElement("div"); 
-        
-      div.textContent = `Item: ${item.name}, Gender: ${item.gender}, Category: ${item.category}`
-      test.appendChild(div)
-
-      const addButton = document.createElement("button");
-      addButton.textContent = "Add to Cart";
-      addButton.addEventListener('click', () => addToCart(item.sid)); 
-      div.appendChild(addButton);
-    
-    }
-  }
-  
-
-
-  // Function to add an item to the cart
-  function addToCart(sid) {
-    const existingItem = cart.find(item => item.sid === sid); 
-    if (existingItem) {
-      existingItem.qty += 1; 
-    } 
-    else {
-      cart.push({ sid, qty: 1 }); 
-    }
-    updateCartCounter(); 
-  }
-
-  // Might actually have to count all cart items, less efficient, but less error prone.
-  //function addToCart() {
-    //const cartCounter = document.querySelector("#cart-counter");
-    // might be able to just do this without parsing?
-    //cartCounter.textContent = parseInt(cartCounter.textContent, 10) += 1;    
-  //}
-
-  function updateCartCounter() {
-    const cartCounter = document.querySelector("#cart-counter");
-    const totalItems = cart.reduce((total, item) => total + item.qty, 0);
-    cartCounter.textContent = totalItems;
-    localStorage.setItem('cart', JSON.stringify(cart));
-  }
-
-
-
-
 });
 
+// This functions should actually pre-render the entire page content, hiding everything except the home.
+function render(items) {
+  const test = document.querySelector("#test");
+  test.innerHTML = '';
+  for(const item of items) {
+    const div = document.createElement("div"); 
+      
+    // this entire div section should be a template btw.
+    div.textContent = `Item: ${item.name}, Gender: ${item.gender}, Category: ${item.category} `
+    div.setAttribute("data-sid", item.id); // this is how we should properly get our item info for each item
+    
+    const addButton = document.createElement("button");
+    addButton.textContent = "Add to Cart";
+    addButton.classList.add("add-item");
+    addButton.classList.add("hover:cursor-pointer")
+    div.appendChild(addButton);
+    test.appendChild(div)
+  }
+
+  test.addEventListener("click", (e) => {
+    if (e.target.classList.contains("add-item")) {
+      addToCart(e.target.parentNode.dataset.sid); // cool passthrough!!
+    }
+  })
+
+  // Add event listener to cart pages
+  document.querySelector("#cart-items")
+  .addEventListener("click", removeFromCart);
+}
