@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     const items = JSON.parse(localStorage.getItem('items'));
     render(items)
-    renderCart();
+    renderCart(); // this will call updateCart too
   }
  
 });

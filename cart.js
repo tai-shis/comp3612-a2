@@ -86,14 +86,39 @@ function renderCartSummary(subtotal, shippingInfo) {
 }
 
 
+function handleShippingForm(e) {
+
+}
 
 
-export function renderCart() {
+export function updateCart() {
   const cart = JSON.parse(localStorage.getItem('cart')) || [];
   const items = JSON.parse(localStorage.getItem('items'));
+  const shippingInfo = JSON.parse(localStorage.getItem('shipping')) || { type: 'standard', dest: 'CA' };
   
   updateCartCounter();
   // get subtotal when rendering so we dont have to loop more than once
   const subtotal = renderCartItems(cart, items);
-  renderCartSummary(subtotal, { type: 'standard', dest: 'CA'}); // test value
+  renderCartSummary(subtotal, shippingInfo);
+}
+
+export function renderCart() {
+  // Add Event handlers
+  const cart = document.querySelector('#cart');
+  cart.querySelector('#shipping-type').addEventListener("change", (e) => {
+    let shipping = JSON.parse(localStorage.getItem('shipping')) || { type: 'standard', dest: 'CA' };
+    console.log(shipping);
+    shipping.type = e.target.value;
+    localStorage.setItem('shipping', JSON.stringify(shipping));
+    updateCart();
+  });
+  
+  cart.querySelector('#shipping-dest').addEventListener("change", (e) => {
+    let shipping = JSON.parse(localStorage.getItem('shipping')) || { type: 'standard', dest: 'CA' };
+    shipping.dest = e.target.value;
+    localStorage.setItem('shipping', JSON.stringify(shipping));
+    updateCart();
+  });
+
+  updateCart()
 }

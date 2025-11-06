@@ -106,8 +106,20 @@
             <article class="hidden px-6" id="cart">
                 <section id="cart-items" class="w-full"></section>
                 <div class="flex flex-row">
-                    <section id="cart-shipping" class="w-1/3">
+                    <section id="cart-shipping" class="w-1/3 m-4">
                         <h2 class="mx-4 text-xl">Shipping</h2>
+                        <form class="border p-4 flex flex-col">
+                            <select name="type" id="shipping-type" class="w-36 border p-2 m-2">
+                                <option value="standard">Standard</option>
+                                <option value="express">Express</option>
+                                <option value="priority">Priority</option>
+                            </select>
+                            <select name="dest" id="shipping-dest" class="w-36 border p-2 m-2">
+                                <option value="CA">Canada</option>
+                                <option value="US">United States</option>
+                                <option value="INT">International</option>
+                            </select>
+                        </form>
                     </section>
                     <section id="cart-summary" class="w-2/3 m-4">
                         <h2 class="mx-4 text-xl">Summary</h2>
