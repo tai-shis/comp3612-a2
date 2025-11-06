@@ -86,11 +86,6 @@ function renderCartSummary(subtotal, shippingInfo) {
 }
 
 
-function handleShippingForm(e) {
-
-}
-
-
 export function updateCart() {
   const cart = JSON.parse(localStorage.getItem('cart')) || [];
   const items = JSON.parse(localStorage.getItem('items'));
@@ -107,7 +102,6 @@ export function renderCart() {
   const cart = document.querySelector('#cart');
   cart.querySelector('#shipping-type').addEventListener("change", (e) => {
     let shipping = JSON.parse(localStorage.getItem('shipping')) || { type: 'standard', dest: 'CA' };
-    console.log(shipping);
     shipping.type = e.target.value;
     localStorage.setItem('shipping', JSON.stringify(shipping));
     updateCart();
@@ -119,6 +113,10 @@ export function renderCart() {
     localStorage.setItem('shipping', JSON.stringify(shipping));
     updateCart();
   });
+
+  cart.querySelector('#checkout-button').addEventListener("click", (e) => {
+
+  })
 
   updateCart()
 }

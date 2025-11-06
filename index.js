@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch(fetchURL)
       .then(response => response.json())
       .then(data => {
-        console.log(data)
         items = data;
         localStorage.setItem('items', JSON.stringify(items));
         render(items)
