@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('items', JSON.stringify(items));
         render(items)
       })
-    .catch(error => console.log(`Error fetching item data: ${error}`));
+      .catch(error => console.log(`Error fetching item data: ${error}`));
   } else {
     const items = JSON.parse(localStorage.getItem('items'));
     render(items)
