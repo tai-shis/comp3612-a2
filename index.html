@@ -26,6 +26,52 @@
                 .link {
                     @apply hover:underline hover:cursor-pointer;
                 }
+                details.filter-group > summary::-webkit-details-marker {
+                    display: none;
+                }
+                input[type="checkbox"] {
+                    accent-color: #2563eb;
+                }
+                .check-hidden {
+                    position: absolute;
+                    opacity: 0;
+                    width: 0;
+                    height: 0;
+                }
+                .check-box {
+                    @apply w-6 h-6 border border-gray-400 bg-white grid place-content-center;
+                }
+                .check-x {
+                    display: none;
+                    @apply text-xs text-gray-600;
+                }
+                .check-hidden:checked + .check-box .check-x {
+                    display: block;
+                }
+                .check-row {
+                    @apply flex items-center gap-3 text-base px-2 py-2 rounded relative;
+                }
+                .check-hidden:focus + .check-box {
+                    @apply ring-1 ring-blue-400;
+                }
+                .check-hidden:checked ~ .check-name {
+                    @apply text-gray-800 font-semibold;
+                }
+                .filter-group {
+                    @apply space-y-2;
+                }
+                .filter-summary {
+                    @apply flex items-center justify-between font-semibold text-base text-gray-700 cursor-pointer;
+                }
+                .filter-options {
+                    @apply mt-1 space-y-2 pl-1;
+                }
+                .filter-label {
+                    @apply flex items-center gap-2 text-base text-gray-700 px-2 py-1 rounded;
+                }
+                .filter-btn {
+                    @apply block w-full text-left text-base text-gray-600 px-2 py-1 rounded cursor-pointer;
+                }
             }
 
         </style>
@@ -144,7 +190,403 @@
                     </section>
                 </div>
             </article>
-            <article class="hidden" id="browser"></article>
+<!---------------------------------------------------- CONSTRUCTION ZONE ------------------------------------------------------------------------------------------------>
+           <article class="hidden px-6" id="browser">
+    <!-- One shared grey card for filters + results -->
+    <div class="flex bg-gray-100 border-[30px] border-white shadow-sm max-w-6xl mx-auto">
+
+        <!-- LEFT: Departments -->
+        <section id="browse-filters" class="w-72 px-6 py-8 space-y-8 bg-gray-100 border-r-[20px] border-white">
+            <h2 class="text-xl font-semibold mb-2">Departments</h2>
+
+            <!-- Gender -->
+            <details open class="filter-group">
+                <summary class="filter-summary">
+                    <span>Gender</span>
+                    <span class="text-blue-500 text-4xl leading-none">&#9662;</span>
+                </summary>
+                <div class="filter-options">
+                    <button type="button" class="filter-btn text-gray-600" data-filter-type="gender" data-filter-value="womens">Female</button>
+                    <button type="button" class="filter-btn text-gray-600" data-filter-type="gender" data-filter-value="mens">Male</button>
+                </div>
+            </details>
+
+            <!-- Category -->
+            <details open class="filter-group">
+                <summary class="filter-summary">
+                    <span>Category</span>
+                    <span class="text-blue-500 text-4xl leading-none">&#9662;</span>
+                </summary>
+                <div class="filter-options">
+                    <button type="button" class="filter-btn text-gray-600" data-filter-type="category" data-filter-value="Bottoms">Bottoms</button>
+                    <button type="button" class="filter-btn text-gray-600" data-filter-type="category" data-filter-value="Dresses">Dresses</button>
+                    <button type="button" class="filter-btn text-gray-600" data-filter-type="category" data-filter-value="Outerwear">Outerwear</button>
+                    <button type="button" class="filter-btn text-gray-600" data-filter-type="category" data-filter-value="Tops">Tops</button>
+                </div>
+            </details>
+
+            <!-- Size -->
+            <details open class="filter-group">
+                <summary class="filter-summary">
+                    <span>Size</span>
+                    <span class="text-blue-500 text-4xl leading-none">&#9662;</span>
+                </summary>
+                <div class="filter-options">
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="size" value="XS">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Extra-Small</span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="size" value="S">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Small</span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="size" value="M">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Medium</span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="size" value="L">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Large</span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="size" value="XL">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500"><Extra-Large></Extra-Large></span>
+                    </label>
+                </div>
+            </details>
+
+            <!-- Colors -->
+            <details open class="filter-group">
+                <summary class="filter-summary">
+                    <span>Colors</span>
+                    <span class="text-blue-500 text-4xl leading-none">&#9662;</span>
+                </summary>
+                <div class="filter-options">
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Beige">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Beige</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#f8ebcb]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Black">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Black</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-black"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Blue">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Blue</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#1d4f73]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Army Green">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Army Green</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#4b5320]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Blue/White">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Blue/White</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-gradient-to-r from-[#1d4f73] to-white"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Blush">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Blush</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#f7cfcf]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Brown">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Brown</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#8b4513]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Burgundy">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Burgundy</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#800020]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Camel">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Camel</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#c19a6b]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Caramel">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Caramel</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#af6f3d]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Champagne">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Champagne</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#f7e7ce]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Charcoal">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Charcoal</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#36454f]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Cognac">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Cognac</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#9a463d]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Coral">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Coral</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#ff7f50]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Cream">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Cream</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#f5f5dc]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Dark Wash">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Dark Wash</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#2a2f36]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Dusty Rose">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Dusty Rose</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#dca9a9]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Emerald">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Emerald</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#50c878]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Forest Green">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Forest Green</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#228b22]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Gold">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Gold</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#d4af37]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Gray">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Gray</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#808080]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Gray/Black">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Gray/Black</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-gradient-to-r from-[#808080] to-black"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Heather Gray">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Heather Gray</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#b6b6b6]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Ivory">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Ivory</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#fffff0]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Khaki">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Khaki</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#c3b091]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Lavender">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Lavender</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#e6e6fa]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Light Blue">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Light Blue</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#add8e6]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Light Wash">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Light Wash</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#d3d6db]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Medium Wash">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Medium Wash</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#b0b6bf]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Mint">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Mint</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#98ff98]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Multicolor">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Multicolor</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-gradient-to-r from-pink-300 via-yellow-300 to-blue-300"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Navy">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Navy</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#000080]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Nude">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Nude</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#e3bc9a]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Oatmeal">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Oatmeal</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#e6d4b6]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Olive">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Olive</span>
+                        <span class="w-6 h-6 border border-gray-300 bg[#556b2f]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Pink/White">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Pink/White</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-gradient-to-r from-pink-300 to-white"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Red">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Red</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#ff0000]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Red Plaid">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Red Plaid</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-gradient-to-br from-red-500 via-black to-red-700"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Rust">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Rust</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#b7410e]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Sage">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Sage</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#9caf88]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Stone">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Stone</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#9c9c9c]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Tan">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Tan</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#d2b48c]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Taupe">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Taupe</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#b38b6d]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Tortoise">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Tortoise</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-gradient-to-r from-amber-700 via-amber-900 to-black"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="White">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">White</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-white"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Wine">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Wine</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#722f37]"></span>
+                    </label>
+                    <label class="check-row">
+                        <input type="checkbox" class="check-hidden" data-filter-type="color" value="Yellow">
+                        <span class="check-box"><span class="check-x">X</span></span>
+                        <span class="check-name text-gray-500">Yellow</span>
+                        <span class="w-6 h-6 border border-gray-300 bg-[#ffd700]"></span>
+                    </label>
+                </div>
+            </details>
+        </section>
+
+        <!-- RIGHT: Browse area -->
+        <section class="flex-1 bg-gray-100 px-8 py-8 border-l-[5px] border-white">
+            <header class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-semibold">Browse</h2>
+
+                <div class="flex items-center gap-4 text-sm text-gray-700">
+                    <span id="browse-results-count">Results</span>
+                    <button type="button" id="browse-clear-all" class="px-3 py-1 border border-gray-400 bg-white hover:bg-gray-200">Clear All</button>
+                    <div class="flex items-center gap-2">
+                        <span>Sort</span>
+                        <select id="browse-sort" class="border px-2 py-1">
+                            <option value="name">Product Name</option>
+                            <option value="price">Price</option>
+                            <option value="category">Category</option>
+                        </select>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Active filter chips -->
+            <div id="browse-active-filters" class="flex flex-wrap gap-3 mb-5 text-sm">
+                <!-- chips get injected here -->
+            </div>
+
+            <!-- Product grid -->
+            <ul id="browse-list" class="grid grid-cols-3 gap-6">
+                <!-- product cards get injected here -->
+            </ul>
+        </section>
+
+    </div>
+</article>
+
+<!---------------------------------------------------- CONSTRUCTION ZONE ------------------------------------------------------------------------------------------------>
             <dialog id="about"></dialog>
         </main>
         <footer>

@@ -5,11 +5,6 @@ function updateCartCounter() {
   cartCounter.textContent = totalItems;
 }
 
-function Cart(sid, qty) {
-  this.sid = sid;
-  this.qty = qty;
-}
-
 // Function to add an item to the cart
 export function addToCart(sid) { 
   let cart = JSON.parse(localStorage.getItem('cart')) || []; // Initialize cart from localStorage if available or make new empty array
@@ -19,7 +14,7 @@ export function addToCart(sid) {
     existingItem.qty += 1; 
   } 
   else {
-    cart.push(new Cart(sid, 1)); 
+    cart.push({ sid: sid, qty: 1 }); 
   }
   localStorage.setItem('cart', JSON.stringify(cart));
   renderCart();
@@ -96,24 +91,6 @@ export function updateCart() {
   const items = JSON.parse(localStorage.getItem('items'));
   const shippingInfo = JSON.parse(localStorage.getItem('shipping')) || { type: 'standard', dest: 'CA' };
   
-
-  // change styling to a custom css class for disabled and just toggle.
-  if (cart.length === 0) {
-    const checkoutButton = document.querySelector('#checkout-button');
-    checkoutButton.setAttribute('disabled', 'true');
-    checkoutButton.classList.add('hover:cursor-not-allowed');
-    checkoutButton.classList.add('bg-gray-200')
-    checkoutButton.classList.remove('hover:cursor-pointer');
-    checkoutButton.classList.remove('hover:bg-gray-200')
-  } else {
-    const checkoutButton = document.querySelector('#checkout-button');
-    checkoutButton.removeAttribute('disabled');
-    checkoutButton.classList.remove('hover:cursor-not-allowed');
-    checkoutButton.classList.remove('bg-gray-200')
-    checkoutButton.classList.add('hover:cursor-pointer');
-    checkoutButton.classList.add('hover:bg-gray-200')
-  }
-
   updateCartCounter();
   // get subtotal when rendering so we dont have to loop more than once
   const subtotal = renderCartItems(cart, items);
@@ -138,9 +115,8 @@ export function renderCart() {
   });
 
   cart.querySelector('#checkout-button').addEventListener("click", (e) => {
-    e.preventDefault();
-    alert("Checkout is not implemented in this demo.");
-  });
+
+  })
 
   updateCart()
 }
