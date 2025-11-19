@@ -1,24 +1,25 @@
 import { addToCart, removeFromCart, renderCart } from "./cart.js";
+import { setupBrowse } from "./browse.js";
 
 document.addEventListener('DOMContentLoaded', () => {
   const fetchURL = `https://gist.githubusercontent.com/rconnolly/d37a491b50203d66d043c26f33dbd798/raw/37b5b68c527ddbe824eaed12073d266d5455432a/clothing-compact.json`;
   
-  let items = JSON.parse(localStorage.getItem('items'));
- 
-  if (!items) {
-    // Standard error handling
+  const cached = localStorage.getItem('items');
+
+  const initialize = (items) => {
+    localStorage.setItem('items', JSON.stringify(items));
+    render(items);
+    setupBrowse(items);
+    renderCart(); // this will call updateCart too
+  };
+
+  if (cached) {
+    initialize(JSON.parse(cached));
+  } else {
     fetch(fetchURL)
       .then(response => response.json())
-      .then(data => {
-        items = data;
-        localStorage.setItem('items', JSON.stringify(items));
-        render(items)
-      })
+      .then(data => initialize(data))
       .catch(error => console.log(`Error fetching item data: ${error}`));
-  } else {
-    const items = JSON.parse(localStorage.getItem('items'));
-    render(items)
-    renderCart(); // this will call updateCart too
   }
  
 });
@@ -51,4 +52,5 @@ function render(items) {
   // Add event listener to cart pages
   document.querySelector("#cart-items")
   .addEventListener("click", removeFromCart);
+  
 }
