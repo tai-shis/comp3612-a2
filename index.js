@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const cached = localStorage.getItem('items');
 
+  // Lets initialize the routing buttons
+  const buttons = document.querySelectorAll("header button").forEach((b) => b.addEventListener("click", route));
+
   const initialize = (items) => {
     localStorage.setItem('items', JSON.stringify(items));
     render(items);
@@ -17,12 +20,31 @@ document.addEventListener('DOMContentLoaded', () => {
     initialize(JSON.parse(cached));
   } else {
     fetch(fetchURL)
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Error occured while fetching item data');
+        } else {
+          return response.json();
+        }
+      })
       .then(data => initialize(data))
       .catch(error => console.log(`Error fetching item data: ${error}`));
   }
  
 });
+
+function route(e) {
+  const pages = document.querySelectorAll("main > *");
+  for(const page of pages) {
+      if(page.id != e.target.dataset.route) {
+          page.classList.remove("block");
+          page.classList.add("hidden");
+      } else {
+          page.classList.remove("hidden");
+          page.classList.add("block");
+      }
+  } 
+}
 
 // This functions should actually pre-render the entire page content, hiding everything except the home.
 function render(items) {

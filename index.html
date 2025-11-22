@@ -76,30 +76,6 @@
 
         </style>
         <script src="index.js" type="module"></script>
-        <script>
-            // Test scripts
-            
-            document.addEventListener("DOMContentLoaded", () => {
-                // this listener should be a parent event handler
-                const buttons = document.querySelectorAll("header button").forEach((b) => b.addEventListener("click", route));
-            });
-
-            // Destination should be id of the "route" (as in the id of the element we are swapping to)
-            // this is just simulating routing
-            // this broke, fix later
-            function route(e) {
-                const pages = document.querySelectorAll("main > *");
-                for(const page of pages) {
-                    if(page.id != e.target.dataset.route) {
-                        page.classList.remove("block");
-                        page.classList.add("hidden");
-                    } else {
-                        page.classList.remove("hidden");
-                        page.classList.add("block");
-                    }
-                } 
-            }
-        </script>
     </head>
     <body>
         <header class="flex flex-row my-6 mx-16 max-w-dvw">
