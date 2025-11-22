@@ -7,7 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const cached = localStorage.getItem('items');
 
   // Lets initialize the routing buttons
-  const buttons = document.querySelectorAll("header button").forEach((b) => b.addEventListener("click", route));
+  document
+    .querySelectorAll("#site-header button[data-route]")
+    .forEach((b) => b.addEventListener("click", route));
 
   const initialize = (items) => {
     localStorage.setItem('items', JSON.stringify(items));

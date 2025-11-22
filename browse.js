@@ -256,6 +256,7 @@ export function setupBrowse(items) {
   clearAll.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
+    // Reseting the filters in browseState
     browseState.genders.clear();
     browseState.categories.clear();
     browseState.sizes.clear();
