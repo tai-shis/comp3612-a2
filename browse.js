@@ -28,7 +28,7 @@ function renderBrowseList(items) {
     return;
   }
 
-  // REMOVED: const placeholder = ...
+ 
 
   for (const p of items) {
     const li = document.createElement("li");
@@ -45,15 +45,9 @@ function renderBrowseList(items) {
 
     const img = document.createElement("img");
     
-    //Only show image if data exists
-    if (p.image) {
-        img.src = p.image;
-        img.alt = p.name;
-        img.className = "max-h-full max-w-full object-contain";
-    } else {
-        // Hide image element if no data (shows gray background of thumb div)
-        img.style.display = "none";
-    }
+    img.src = p.image; 
+    img.alt = p.name;
+    img.className = "max-h-full max-w-full object-contain";
 
     thumb.appendChild(img);
     linkButton.appendChild(thumb);

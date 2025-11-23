@@ -6,17 +6,23 @@ function updateCartCounter() {
 }
 
 // Function to add an item to the cart
-export function addToCart(sid) { 
-  let cart = JSON.parse(localStorage.getItem('cart')) || []; // Initialize cart from localStorage if available or make new empty array
+export function addToCart(sid, qty = 1) { 
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
   
+  // Check if item already exists in cart
   const existingItem = cart.find(item => item.sid == sid); 
+  
   if (existingItem) {
-    existingItem.qty += 1; 
-  } 
-  else {
-    cart.push({ sid: sid, qty: 1 }); 
+    // If it exists, add the new quantity to the existing quantity
+    existingItem.qty += qty; 
+  } else {
+    // If new, push it with the specified quantity
+    cart.push({ sid: sid, qty: qty }); 
   }
+
   localStorage.setItem('cart', JSON.stringify(cart));
+  
+  // Update the UI (Counter and Cart View)
   renderCart();
 }
 

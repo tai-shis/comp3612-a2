@@ -41,13 +41,13 @@ window.displayProduct = function(sid) {
         return;
     }
 
-    // 1. Populate text elements
+    // Populate text elements
     document.querySelector('#sp-name').textContent = product.name;
     document.querySelector('#sp-price').textContent = `$${Number(product.price).toFixed(2)}`;
     document.querySelector('#sp-desc').textContent = product.description;
     document.querySelector('#sp-features').textContent = product.features || "N/A"; // Added features fallback
 
-    // 2. Set Image (Fixed and Uncommented)
+    // Set Image (Fixed and Uncommented)
     const imgElement = document.querySelector('#sp-image');
     if (product.image) {
         imgElement.src = product.image; 
@@ -57,17 +57,17 @@ window.displayProduct = function(sid) {
         imgElement.classList.add('hidden');
     }
 
-    // 3. Update Breadcrumbs 
+    // Update Breadcrumbs 
     document.querySelector('#crumb-gender').textContent = product.gender;
     document.querySelector('#crumb-category').textContent = product.category;
     document.querySelector('#crumb-product').textContent = product.name;
 
-    // 4. Reset Quantity Input
+    //  Reset Quantity Input
     const qtyInput = document.querySelector('#sp-qty');
     if(qtyInput) qtyInput.value = 1;
 
 
-    // 5. DYNAMIC SIZES
+    // DYNAMIC SIZES
     const sizeContainer = document.querySelector('#sp-sizes');
     const sizeWrapper = document.querySelector('#sp-sizes-container');
     
@@ -95,7 +95,7 @@ window.displayProduct = function(sid) {
         }
     }
 
-    // 6. DYNAMIC COLORS
+    // DYNAMIC COLORS wooo
     const colorContainer = document.querySelector('#sp-colors');
     const colorWrapper = document.querySelector('#sp-colors-container');
     
@@ -132,8 +132,6 @@ window.displayProduct = function(sid) {
         }
     }
 
-
-    // 7. Setup "Add to Cart" button 
     const btn = document.querySelector('#sp-add-btn');
     const newBtn = btn.cloneNode(true); // remove old event listeners
     btn.parentNode.replaceChild(newBtn, btn);
@@ -142,7 +140,7 @@ window.displayProduct = function(sid) {
         // Retrieve quantity from input
         const quantity = parseInt(document.querySelector('#sp-qty').value) || 1;
         
-        // Pass ID and Quantity to your cart logic
+        // Pass ID and Quantity to cart logic
         addToCart(product.id, quantity); 
         
         window.showToast(`Added ${quantity} x ${product.name} to cart!`);
