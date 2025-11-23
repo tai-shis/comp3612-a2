@@ -1,6 +1,33 @@
 import { addToCart, removeFromCart, renderCart } from "./cart.js";
 import { setupBrowse } from "./browse.js";
 
+window.showToast = function(message) {
+    const container = document.querySelector('#toast-container'); 
+    const toast = document.createElement('div');
+    toast.className = "bg-gray-800 text-white px-6 py-4 rounded shadow-lg transition-all duration-500 transform translate-y-10 opacity-0 flex gap-2";
+    
+    // Safe DOM creation (No innerHTML)
+    const icon = document.createElement('span');
+    icon.textContent = "✓";
+    icon.className = "text-green-400 font-bold";
+    
+    const text = document.createElement('span');
+    text.textContent = message;
+
+    toast.appendChild(icon);
+    toast.appendChild(text);
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => toast.classList.remove('translate-y-10', 'opacity-0'));
+
+    setTimeout(() => {
+        toast.classList.add('translate-y-10', 'opacity-0');
+        setTimeout(() => {
+            if (container.contains(toast)) container.removeChild(toast);
+        }, 500); 
+    }, 3000);
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   const fetchURL = `https://gist.githubusercontent.com/rconnolly/d37a491b50203d66d043c26f33dbd798/raw/37b5b68c527ddbe824eaed12073d266d5455432a/clothing-compact.json`;
   
@@ -15,8 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('items', JSON.stringify(items));
     render(items);
     setupBrowse(items);
-    renderCart(); // this will call updateCart too
-  };
+    // setupSingleProduct(items);  <-- DELETE THIS LINE
+    renderCart();
+};
 
   if (cached) {
     initialize(JSON.parse(cached));
@@ -78,3 +106,4 @@ function render(items) {
   .addEventListener("click", removeFromCart);
   
 }
+

@@ -86,7 +86,7 @@
                 <button data-route="home" class="link">Home</button> |
                 <button data-route="women" class="link">Women</button> |
                 <button data-route="men" class="link">Men</button> |
-                <button data-route="browser" class="link">Browse</button> |
+                <button data-route="browse" class="link">Browse</button> |
                 <button data-route="about" class="link">About</button>
             </nav>
 
@@ -103,6 +103,16 @@
 
                 </div>
             </article>
+<!---------------------------------------------------- CONSTRUCTION ZONE ------------------------------------------------------------------------------------------------>
+            <article class="hidden" id="men">
+                <h1 class="text-3xl font-bold">Men's Landing Page</h1>
+            </article>
+
+            <article class="hidden" id="women">
+                <h1 class="text-3xl font-bold">Women's Landing Page</h1>
+            </article>
+
+<!---------------------------------------------------- CONSTRUCTION ZONE ------------------------------------------------------------------------------------------------>
             <article class="hidden" id="singleproduct">
                 <div class="px-6">
                     <p id="breadcrumb" class="px-2 py-4 text-md">
@@ -169,7 +179,7 @@
                 </div>
             </article>
 <!---------------------------------------------------- CONSTRUCTION ZONE ------------------------------------------------------------------------------------------------>
-           <article class="hidden px-6" id="browser">
+           <article class="hidden px-6" id="browse">
     <!-- One shared grey card for filters + results -->
     <div class="flex bg-gray-100 border-[30px] border-white shadow-sm max-w-6xl mx-auto">
 
@@ -569,7 +579,7 @@
         </main>
         <footer>
         </footer>
-
+        <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
         <template id="cart-item-template">
             <div class="cart-item flex flex-row">
                 <button class="remove-item border bg-gray-200 px-2">-</button>
