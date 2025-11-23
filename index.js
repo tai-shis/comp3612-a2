@@ -1,14 +1,16 @@
 import { addToCart, removeFromCart, renderCart } from "./cart.js";
 import { setupBrowse } from "./browse.js";
 
+// Displays a temporary notification at the bottom right
 window.showToast = function(message) {
     const container = document.querySelector('#toast-container'); 
     const toast = document.createElement('div');
+
+    //shadow 
     toast.className = "bg-gray-800 text-white px-6 py-4 rounded shadow-lg transition-all duration-500 transform translate-y-10 opacity-0 flex gap-2";
-    
-    // Safe DOM creation (No innerHTML)
+  
     const icon = document.createElement('span');
-    icon.textContent = "✓";
+    icon.textContent = "✓"; // yippie
     icon.className = "text-green-400 font-bold";
     
     const text = document.createElement('span');
@@ -17,15 +19,72 @@ window.showToast = function(message) {
     toast.appendChild(icon);
     toast.appendChild(text);
     container.appendChild(toast);
-
+  // Trigger slide animation
     requestAnimationFrame(() => toast.classList.remove('translate-y-10', 'opacity-0'));
-
+    // Remove after 3 seconds
     setTimeout(() => {
         toast.classList.add('translate-y-10', 'opacity-0');
         setTimeout(() => {
             if (container.contains(toast)) container.removeChild(toast);
         }, 500); 
     }, 3000);
+};
+
+// Populates and displays the Single Product View
+window.displayProduct = function(sid) {
+    // Get data from local storage
+    const items = JSON.parse(localStorage.getItem('items'));
+    const product = items.find(i => i.id == sid);
+    
+    if(!product) {
+        console.error("Product not found:", sid);
+        return;
+    }
+
+    // Populate text elements
+    document.querySelector('#sp-name').textContent = product.name;
+    document.querySelector('#sp-price').textContent = `$${Number(product.price).toFixed(2)}`;
+    document.querySelector('#sp-desc').textContent = product.description;
+    
+    // Set image (I hope eventually)
+  
+    // const imgElement = document.querySelector('#sp-image');
+    // imgElement.src = product.image; 
+    // imgElement.alt = product.name;
+
+    // Update Breadcrumbs 
+    document.querySelector('#crumb-gender').textContent = product.gender;
+    document.querySelector('#crumb-category').textContent = product.category;
+    document.querySelector('#crumb-product').textContent = product.name;
+
+    // Reset inputs
+    const qtyInput = document.querySelector('#sp-qty');
+    if(qtyInput) qtyInput.value = 1;
+
+    // Setup "Add to Cart" button 
+    const btn = document.querySelector('#sp-add-btn');
+    const newBtn = btn.cloneNode(true); // remove old event listeners
+    btn.parentNode.replaceChild(newBtn, btn);
+
+    newBtn.addEventListener('click', () => {
+        // To be done 
+        // Connect to real addToCart() logic next
+        window.showToast(`Added ${product.name} to cart!`);
+    });
+
+    // Switch View manually
+    // Hide all other pages
+    document.querySelectorAll("main > article").forEach(page => {
+        page.classList.add('hidden');
+        page.classList.remove('block');
+    });
+    // Show this page
+    const spView = document.querySelector('#singleproduct');
+    spView.classList.remove('hidden');
+    spView.classList.add('block');
+    
+    // Scroll to top
+    window.scrollTo(0,0);
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -42,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('items', JSON.stringify(items));
     render(items);
     setupBrowse(items);
-    // setupSingleProduct(items);  <-- DELETE THIS LINE
+    // setupSingleProduct(items);  
     renderCart();
 };
 

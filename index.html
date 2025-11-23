@@ -118,24 +118,55 @@
                     <p id="breadcrumb" class="px-2 py-4 text-md">
                         <!-- set event handlers for all of these -->
                         <button id="crumb-home" class="link underline">Home</button> >
-                        <button id="crumb-gender" class="link underline">Gender</button> > <!-- Populate the route and text content with JS-->
+                        <button id="crumb-gender" class="link underline capitalize">Gender</button> > <!-- Populate the route and text content with JS-->
                         <button id="crumb-category" class="link underline">Category</button> > <!-- This too -->
                         <span id="crumb-product">Product</span> <!-- This one isn't a link, just change text content-->
                     </p>
                     <div id="product" class="flex flex-row gap-6">
                         <div id="product-images" class="flex flex-col">
-                            <img id="product-images-main" class="flex w-full h-2/3 mb-4">
+                            <div class="border bg-gray-100 h-96 flex items-center justify-center mb-4">
+                                <img id="sp-image" class="max-h-full max-w-full object-contain">
+                            </div>
+                            
                             <div id="product-images-sub" class="flex flex-row w-full h-1/3 gap-4 mt-4">
-                                <img class="flex w-1/2">
-                                <img class="flex w-1/2">
+                                <div class="w-1/2 h-32 bg-gray-200 border"></div>
+                                <div class="w-1/2 h-32 bg-gray-200 border"></div>
                             </div>
                         </div>
-                        <div id="product-description" class="">
-                            <!-- put the header for items here! -->
+
+                        <div id="product-description" class="w-1/2 flex flex-col gap-4">
+                            
+                            <h2 id="sp-name" class="text-3xl font-bold text-gray-800"></h2>
+                            
+                            <p id="sp-price" class="text-2xl text-gray-600 font-semibold"></p>
+                            
+                            <div class="mt-4">
+                                <h3 class="font-semibold text-gray-700">Description</h3>
+                                <p id="sp-desc" class="text-gray-600 text-sm mt-1"></p>
+                            </div>
+
+                            <div class="mt-2">
+                                <h3 class="font-semibold text-gray-700">Details</h3>
+                                <p id="sp-features" class="text-gray-600 text-sm mt-1"></p>
+                            </div>
+
+                            <div class="mt-6 p-4 bg-gray-50 rounded border">
+                                <div class="flex items-center gap-4 mb-4">
+                                    <label class="font-semibold">Quantity:</label>
+                                    <input type="number" id="sp-qty" value="1" min="1" class="border p-1 w-16 text-center">
+                                </div>
+                                
+                                <button id="sp-add-btn" class="w-full bg-blue-600 text-white py-3 font-bold uppercase tracking-wide hover:bg-blue-700 transition cursor-pointer">
+                                    Add to Cart
+                                </button>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </article>
+
+
             <article class="hidden px-6" id="cart">
                 <section id="cart-items" class="w-full"></section>
                 <div class="flex flex-row">
