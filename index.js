@@ -133,17 +133,20 @@ window.displayProduct = function(sid) {
     }
 
     const btn = document.querySelector('#sp-add-btn');
-    const newBtn = btn.cloneNode(true); // remove old event listeners
-    btn.parentNode.replaceChild(newBtn, btn);
+        const newBtn = btn.cloneNode(true); // remove old event listeners
+        btn.parentNode.replaceChild(newBtn, btn);
 
-    newBtn.addEventListener('click', () => {
-        // Retrieve quantity from input
-        const quantity = parseInt(document.querySelector('#sp-qty').value) || 1;
-        
-        // Pass ID and Quantity to cart logic
-        addToCart(product.id, quantity); 
-        
-        window.showToast(`Added ${quantity} x ${product.name} to cart!`);
+        newBtn.addEventListener('click', () => {
+            // 1. Get the number from the input box
+            const qtyInput = document.querySelector('#sp-qty');
+            const qty = parseInt(qtyInput.value) || 1;
+
+            // 2. Call addToCart with the ID and the Quantity
+            // Using the imported function directly since it's available in scope
+            addToCart(product.id, qty);
+                
+            // 3. Show Toast
+            window.showToast(`Added ${qty} x ${product.name} to cart!`);
     });
 
     // Switch View manually
