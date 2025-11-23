@@ -137,15 +137,12 @@ window.displayProduct = function(sid) {
         btn.parentNode.replaceChild(newBtn, btn);
 
         newBtn.addEventListener('click', () => {
-            // 1. Get the number from the input box
+            // Get the number from the input box
             const qtyInput = document.querySelector('#sp-qty');
             const qty = parseInt(qtyInput.value) || 1;
-
-            // 2. Call addToCart with the ID and the Quantity
-            // Using the imported function directly since it's available in scope
             addToCart(product.id, qty);
                 
-            // 3. Show Toast
+            // Show Toast
             window.showToast(`Added ${qty} x ${product.name} to cart!`);
     });
 
