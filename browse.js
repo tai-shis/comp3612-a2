@@ -1,4 +1,3 @@
-// browse.js
 import { addToCart } from "./cart.js";
 
 export const browseState = {
@@ -14,43 +13,53 @@ let allItems = [];
 function renderBrowseList(items) {
   const list = document.querySelector("#browse-list");
   const count = document.querySelector("#browse-results-count");
-  list.innerHTML = "";
+  
+  while (list.firstChild) {
+    list.removeChild(list.firstChild);
+  }
 
   count.textContent = `${items.length} result${items.length === 1 ? "" : "s"}`;
 
   if (!items.length) {
     const empty = document.createElement("li");
-    empty.className = "col-span-3 text-sm text-gray-500";
+    empty.className = "col-span-3 text-sm text-gray-500 text-center py-10";
     empty.textContent = "No products match your filters.";
     list.appendChild(empty);
     return;
   }
 
-  const placeholder = "https://via.placeholder.com/200x250?text=placeholder";
+  // REMOVED: const placeholder = ...
 
   for (const p of items) {
     const li = document.createElement("li");
     li.className =
-      "border border-gray-400 bg-white p-3 flex flex-col text-sm gap-2";
+      "border border-gray-400 bg-white p-3 flex flex-col text-sm gap-2 transition hover:shadow-lg";
     li.dataset.sid = p.id;
 
     const linkButton = document.createElement("button");
-    linkButton.className = "product-link flex flex-col text-left gap-2";
+    linkButton.className = "product-link flex flex-col text-left gap-2 w-full";
 
     const thumb = document.createElement("div");
     thumb.className =
-      "border border-gray-400 h-48 flex items-center justify-center bg-gray-100 text-xs text-gray-400";
+      "border border-gray-400 h-48 flex items-center justify-center bg-gray-100 text-xs text-gray-400 w-full";
 
     const img = document.createElement("img");
-    img.src = p.image || placeholder;
-    img.alt = p.name;
-    img.className = "max-h-full max-w-full";
+    
+    //Only show image if data exists
+    if (p.image) {
+        img.src = p.image;
+        img.alt = p.name;
+        img.className = "max-h-full max-w-full object-contain";
+    } else {
+        // Hide image element if no data (shows gray background of thumb div)
+        img.style.display = "none";
+    }
 
     thumb.appendChild(img);
     linkButton.appendChild(thumb);
 
     const row = document.createElement("div");
-    row.className = "flex items-center justify-between";
+    row.className = "flex items-center justify-between mt-2";
 
     const copy = document.createElement("div");
     copy.className = "flex flex-col leading-tight";
@@ -65,7 +74,7 @@ function renderBrowseList(items) {
 
     const addButton = document.createElement("button");
     addButton.className =
-      "add-item text-xs border border-gray-500 px-2 py-1 hover:bg-gray-200";
+      "add-item text-xs border border-gray-500 px-3 py-1 hover:bg-gray-200 rounded transition";
     addButton.textContent = "+";
 
     copy.appendChild(name);
@@ -81,13 +90,12 @@ function renderBrowseList(items) {
 
 function renderActiveFilterChips() {
   const container = document.querySelector("#browse-active-filters");
-  container.innerHTML = "";
+  container.innerHTML = ""; 
 
   const formatLabel = (type, value) => {
     if (type === "gender") {
       return value === "womens" ? "Female" : value === "mens" ? "Male" : value;
     }
-    // Title-case single words
     return value.charAt(0).toUpperCase() + value.slice(1);
   };
 
@@ -101,7 +109,7 @@ function renderActiveFilterChips() {
 
       chip.appendChild(document.createTextNode(formatLabel(type, value)));
       const close = document.createElement("span");
-      close.className = "text-gray-500";
+      close.className = "text-gray-500 ml-1";
       close.textContent = "x";
       chip.appendChild(close);
 
@@ -188,18 +196,14 @@ export function setupBrowse(items) {
 
   filters.addEventListener("change", (e) => {
     if (!e.target.matches('input[type="checkbox"][data-filter-type]')) return;
-
     const type = e.target.dataset.filterType;
     const value = e.target.value;
     const set = getSet(type);
-
     if (e.target.checked) set.add(value);
     else set.delete(value);
-
     const label = e.target.parentElement;
     label.classList.toggle("font-semibold", e.target.checked);
     label.classList.toggle("bg-gray-200", e.target.checked);
-
     renderActiveFilterChips();
     applyBrowseFilters();
   });
@@ -207,11 +211,9 @@ export function setupBrowse(items) {
   filters.addEventListener("click", (e) => {
     const btn = e.target.closest("button[data-filter-type]");
     if (!btn) return;
-
     const type = btn.dataset.filterType;
     const value = btn.dataset.filterValue;
     const set = getSet(type);
-
     if (set.has(value)) {
       set.delete(value);
       setButtonState(btn, false);
@@ -219,7 +221,6 @@ export function setupBrowse(items) {
       set.add(value);
       setButtonState(btn, true);
     }
-
     renderActiveFilterChips();
     applyBrowseFilters();
   });
@@ -227,12 +228,9 @@ export function setupBrowse(items) {
   chips.addEventListener("click", (e) => {
     const chip = e.target.closest("button[data-filter-type]");
     if (!chip) return;
-
     const { filterType, filterValue } = chip.dataset;
     const set = getSet(filterType);
-
     set.delete(filterValue);
-
     const checkbox = filters.querySelector(
       `input[data-filter-type="${filterType}"][value="${filterValue}"]`
     );
@@ -241,14 +239,12 @@ export function setupBrowse(items) {
       const label = checkbox.parentElement;
       label.classList.remove("font-semibold", "bg-gray-200");
     }
-
     const btn = filters.querySelector(
       `button[data-filter-type="${filterType}"][data-filter-value="${filterValue}"]`
     );
     if (btn) {
       setButtonState(btn, false);
     }
-
     renderActiveFilterChips();
     applyBrowseFilters();
   });
@@ -256,12 +252,10 @@ export function setupBrowse(items) {
   clearAll.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
-    // Reseting the filters in browseState
     browseState.genders.clear();
     browseState.categories.clear();
     browseState.sizes.clear();
     browseState.colors.clear();
-
     filters
       .querySelectorAll('input[type="checkbox"][data-filter-type]')
       .forEach((cb) => {
@@ -271,7 +265,6 @@ export function setupBrowse(items) {
     filters
       .querySelectorAll('button[data-filter-type]')
       .forEach((btn) => setButtonState(btn, false));
-
     renderActiveFilterChips();
     applyBrowseFilters();
   });
@@ -281,6 +274,7 @@ export function setupBrowse(items) {
     applyBrowseFilters();
   });
 
+  // List Click Handler 
   list.addEventListener("click", (e) => {
     const li = e.target.closest("li[data-sid]");
     if (!li) return;
@@ -288,8 +282,11 @@ export function setupBrowse(items) {
 
     if (e.target.classList.contains("add-item")) {
       addToCart(sid);
+      // Call global toast
+      window.showToast("Added to cart");
     } else if (e.target.closest(".product-link")) {
-      // TODO: showSingleProduct(sid) and route to #singleproduct
+      // Call global display function (from index.js)
+      window.displayProduct(sid);
     }
   });
 

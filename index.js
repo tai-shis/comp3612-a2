@@ -41,43 +41,119 @@ window.displayProduct = function(sid) {
         return;
     }
 
-    // Populate text elements
+    // 1. Populate text elements
     document.querySelector('#sp-name').textContent = product.name;
     document.querySelector('#sp-price').textContent = `$${Number(product.price).toFixed(2)}`;
     document.querySelector('#sp-desc').textContent = product.description;
-    
-    // Set image (I hope eventually)
-  
-    // const imgElement = document.querySelector('#sp-image');
-    // imgElement.src = product.image; 
-    // imgElement.alt = product.name;
+    document.querySelector('#sp-features').textContent = product.features || "N/A"; // Added features fallback
 
-    // Update Breadcrumbs 
+    // 2. Set Image (Fixed and Uncommented)
+    const imgElement = document.querySelector('#sp-image');
+    if (product.image) {
+        imgElement.src = product.image; 
+        imgElement.alt = product.name;
+        imgElement.classList.remove('hidden');
+    } else {
+        imgElement.classList.add('hidden');
+    }
+
+    // 3. Update Breadcrumbs 
     document.querySelector('#crumb-gender').textContent = product.gender;
     document.querySelector('#crumb-category').textContent = product.category;
     document.querySelector('#crumb-product').textContent = product.name;
 
-    // Reset inputs
+    // 4. Reset Quantity Input
     const qtyInput = document.querySelector('#sp-qty');
     if(qtyInput) qtyInput.value = 1;
 
-    // Setup "Add to Cart" button 
+
+    // 5. DYNAMIC SIZES
+    const sizeContainer = document.querySelector('#sp-sizes');
+    const sizeWrapper = document.querySelector('#sp-sizes-container');
+    
+    // Clear previous buttons
+    if (sizeContainer) sizeContainer.innerHTML = ''; 
+
+    if (sizeContainer && sizeWrapper) {
+        if (product.sizes && product.sizes.length > 0) {
+            sizeWrapper.classList.remove('hidden'); 
+            
+            product.sizes.forEach(size => {
+                const btn = document.createElement('button');
+                btn.className = 'border border-gray-300 px-4 py-2 text-sm text-gray-600 hover:border-black hover:text-black transition cursor-pointer';
+                btn.textContent = size;
+
+                // Click selection effect
+                btn.onclick = () => {
+                    Array.from(sizeContainer.children).forEach(b => b.className = 'border border-gray-300 px-4 py-2 text-sm text-gray-600 hover:border-black hover:text-black transition cursor-pointer');
+                    btn.className = 'border-2 border-black px-4 py-2 text-sm text-black font-bold cursor-pointer';
+                };
+                sizeContainer.appendChild(btn);
+            });
+        } else {
+            sizeWrapper.classList.add('hidden'); 
+        }
+    }
+
+    // 6. DYNAMIC COLORS
+    const colorContainer = document.querySelector('#sp-colors');
+    const colorWrapper = document.querySelector('#sp-colors-container');
+    
+    // Clear previous buttons
+    if (colorContainer) colorContainer.innerHTML = '';
+
+    if (colorContainer && colorWrapper) {
+        // Handle array vs single object vs string
+        let colors = [];
+        if (product.color) {
+            colors = Array.isArray(product.color) ? product.color : [product.color];
+        }
+
+        if (colors.length > 0) {
+            colorWrapper.classList.remove('hidden');
+
+            colors.forEach(c => {
+                const colorName = typeof c === 'object' ? c.name : c;
+                
+                const btn = document.createElement('button');
+                btn.className = 'w-8 h-8 border border-gray-300 rounded-sm hover:border-black transition cursor-pointer';
+                btn.style.backgroundColor = colorName.toLowerCase(); 
+                btn.title = colorName; 
+
+                // Selection effect
+                btn.onclick = () => {
+                    Array.from(colorContainer.children).forEach(b => b.classList.remove('ring-2', 'ring-offset-1', 'ring-black'));
+                    btn.classList.add('ring-2', 'ring-offset-1', 'ring-black');
+                };
+                colorContainer.appendChild(btn);
+            });
+        } else {
+            colorWrapper.classList.add('hidden');
+        }
+    }
+
+
+    // 7. Setup "Add to Cart" button 
     const btn = document.querySelector('#sp-add-btn');
     const newBtn = btn.cloneNode(true); // remove old event listeners
     btn.parentNode.replaceChild(newBtn, btn);
 
     newBtn.addEventListener('click', () => {
-        // To be done 
-        // Connect to real addToCart() logic next
-        window.showToast(`Added ${product.name} to cart!`);
+        // Retrieve quantity from input
+        const quantity = parseInt(document.querySelector('#sp-qty').value) || 1;
+        
+        // Pass ID and Quantity to your cart logic
+        addToCart(product.id, quantity); 
+        
+        window.showToast(`Added ${quantity} x ${product.name} to cart!`);
     });
 
     // Switch View manually
-    // Hide all other pages
     document.querySelectorAll("main > article").forEach(page => {
         page.classList.add('hidden');
         page.classList.remove('block');
     });
+    
     // Show this page
     const spView = document.querySelector('#singleproduct');
     spView.classList.remove('hidden');
@@ -135,7 +211,6 @@ function route(e) {
   } 
 }
 
-// This functions should actually pre-render the entire page content, hiding everything except the home.
 function render(items) {
   const test = document.querySelector("#test");
   test.innerHTML = '';
@@ -149,7 +224,7 @@ function render(items) {
     const addButton = document.createElement("button");
     addButton.textContent = "Add to Cart";
     addButton.classList.add("add-item");
-    addButton.classList.add("hover:cursor-pointer")
+    addButton.classList.add("hover:cursor-pointer") 
     div.appendChild(addButton);
     test.appendChild(div)
   }
@@ -165,4 +240,3 @@ function render(items) {
   .addEventListener("click", removeFromCart);
   
 }
-

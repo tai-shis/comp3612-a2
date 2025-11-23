@@ -113,56 +113,118 @@
             </article>
 
 <!---------------------------------------------------- CONSTRUCTION ZONE ------------------------------------------------------------------------------------------------>
-            <article class="hidden" id="singleproduct">
-                <div class="px-6">
-                    <p id="breadcrumb" class="px-2 py-4 text-md">
-                        <!-- set event handlers for all of these -->
-                        <button id="crumb-home" class="link underline">Home</button> >
-                        <button id="crumb-gender" class="link underline capitalize">Gender</button> > <!-- Populate the route and text content with JS-->
-                        <button id="crumb-category" class="link underline">Category</button> > <!-- This too -->
-                        <span id="crumb-product">Product</span> <!-- This one isn't a link, just change text content-->
-                    </p>
-                    <div id="product" class="flex flex-row gap-6">
-                        <div id="product-images" class="flex flex-col">
-                            <div class="border bg-gray-100 h-96 flex items-center justify-center mb-4">
-                                <img id="sp-image" class="max-h-full max-w-full object-contain">
+           <article class="hidden" id="singleproduct">
+                <div class="px-6 max-w-7xl mx-auto py-10">
+                    
+                    <nav class="mb-8 text-sm text-black flex items-center gap-1 font-medium">
+                        <button id="crumb-home" class="text-black underline hover:no-underline">Home</button> 
+                        <span>&gt;</span>
+                        <button id="crumb-gender" class="text-black underline hover:no-underline capitalize">Gender</button> 
+                        <span>&gt;</span>
+                        <button id="crumb-category" class="text-black underline hover:no-underline">Category</button> 
+                        <span>&gt;</span>
+                        <span id="crumb-product" class="text-black font-bold">Product Title</span> 
+                    </nav>
+
+                    <div id="product" class="flex flex-col md:flex-row gap-12 w-full mb-16">
+                        
+                        <div class="flex flex-col w-full md:w-1/2 gap-4">
+                            <div class="aspect-[4/3] bg-gray-100 flex items-center justify-center overflow-hidden rounded-sm">
+                                <img id="sp-image" class="w-full h-full object-contain mix-blend-multiply hidden">
+                                <span class="text-gray-400 text-sm">Main Product image placeholder</span>
                             </div>
                             
-                            <div id="product-images-sub" class="flex flex-row w-full h-1/3 gap-4 mt-4">
-                                <div class="w-1/2 h-32 bg-gray-200 border"></div>
-                                <div class="w-1/2 h-32 bg-gray-200 border"></div>
+                            <div class="flex gap-4 h-32">
+                                <div class="w-1/3 bg-gray-100 flex items-center justify-center text-xs text-gray-400">Placeholder</div>
+                                <div class="w-1/3 bg-gray-100 flex items-center justify-center text-xs text-gray-400">Placeholder</div>
                             </div>
                         </div>
 
-                        <div id="product-description" class="w-1/2 flex flex-col gap-4">
+                        <div class="w-full md:w-1/2 flex flex-col gap-6">
                             
-                            <h2 id="sp-name" class="text-3xl font-bold text-gray-800"></h2>
+                            <div>
+                                <h2 id="sp-name" class="text-3xl font-bold text-gray-900 tracking-tight">Product Title</h2>
+                                <p id="sp-price" class="text-xl font-semibold text-gray-900 mt-2">$0.00</p>
+                            </div>
                             
-                            <p id="sp-price" class="text-2xl text-gray-600 font-semibold"></p>
-                            
-                            <div class="mt-4">
-                                <h3 class="font-semibold text-gray-700">Description</h3>
-                                <p id="sp-desc" class="text-gray-600 text-sm mt-1"></p>
+                            <div>
+                                <h3 class="font-bold text-gray-900 text-sm uppercase mb-1">Description</h3>
+                                <p id="sp-desc" class="text-gray-600 text-sm leading-relaxed">
+                                    Product description goes here...
+                                </p>
                             </div>
 
-                            <div class="mt-2">
-                                <h3 class="font-semibold text-gray-700">Details</h3>
-                                <p id="sp-features" class="text-gray-600 text-sm mt-1"></p>
+                            <div>
+                                <h3 class="font-bold text-gray-900 text-sm uppercase mb-1">Material</h3>
+                                <p id="sp-features" class="text-gray-600 text-sm">Cotton / Polyester Blend</p>
                             </div>
 
-                            <div class="mt-6 p-4 bg-gray-50 rounded border">
-                                <div class="flex items-center gap-4 mb-4">
-                                    <label class="font-semibold">Quantity:</label>
-                                    <input type="number" id="sp-qty" value="1" min="1" class="border p-1 w-16 text-center">
-                                </div>
+                            <div class="pt-4 flex flex-col gap-6">
                                 
-                                <button id="sp-add-btn" class="w-full bg-blue-600 text-white py-3 font-bold uppercase tracking-wide hover:bg-blue-700 transition cursor-pointer">
-                                    Add to Cart
+                                <div class="flex items-center gap-4">
+                                    <label class="font-bold text-gray-900 text-sm uppercase">Quantity</label>
+                                    <input type="number" id="sp-qty" value="1" min="1" class="border border-gray-300 p-2 w-16 text-center rounded-sm">
+                                </div>
+
+                                <div id="sp-sizes-container" class="flex flex-col gap-2">
+     <span class="font-bold text-gray-900 text-sm uppercase">Size</span>
+     <div id="sp-sizes" class="flex gap-2 flex-wrap">
+         </div>
+</div>
+
+<div id="sp-colors-container" class="flex flex-col gap-2">
+    <span class="font-bold text-gray-900 text-sm uppercase">Color</span>
+    <div id="sp-colors" class="flex gap-2 flex-wrap">
+        </div>
+</div>
+
+                                <button id="sp-add-btn" class="mt-2 w-48 bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold py-3 px-6 rounded-sm shadow-sm transition-colors flex items-center justify-center gap-2 border border-gray-300">
+                                    <span>+</span> Add to Cart
                                 </button>
                             </div>
 
                         </div>
                     </div>
+
+                    <div class="border-t border-gray-200 pt-10">
+                        <h3 class="text-xl font-bold text-gray-900 mb-6 text-center">Related Products</h3>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                            <div class="flex flex-col gap-2">
+                                <div class="aspect-square bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 text-xs">placeholder</div>
+                                <div class="flex justify-between text-sm font-medium">
+                                    <span>Title</span>
+                                    <span>$price</span>
+                                </div>
+                                <button class="text-xs text-gray-500 underline text-left">+ Add</button>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <div class="aspect-square bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 text-xs">placeholder</div>
+                                <div class="flex justify-between text-sm font-medium">
+                                    <span>Title</span>
+                                    <span>$price</span>
+                                </div>
+                                <button class="text-xs text-gray-500 underline text-left">+ Add</button>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <div class="aspect-square bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 text-xs">placeholder</div>
+                                <div class="flex justify-between text-sm font-medium">
+                                    <span>Title</span>
+                                    <span>$price</span>
+                                </div>
+                                <button class="text-xs text-gray-500 underline text-left">+ Add</button>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <div class="aspect-square bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-400 text-xs">placeholder</div>
+                                <div class="flex justify-between text-sm font-medium">
+                                    <span>Title</span>
+                                    <span>$price</span>
+                                </div>
+                                <button class="text-xs text-gray-500 underline text-left">+ Add</button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </article>
 
