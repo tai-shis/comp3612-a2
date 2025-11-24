@@ -1,4 +1,4 @@
-import { addToCart, removeFromCart, renderCart } from "./cart.js";
+﻿import { addToCart, renderCart } from "./cart.js";
 import { setupBrowse } from "./browse.js";
 
 // Displays a temporary notification at the bottom right
@@ -10,7 +10,7 @@ window.showToast = function(message) {
     toast.className = "bg-gray-800 text-white px-6 py-4 rounded shadow-lg transition-all duration-500 transform translate-y-10 opacity-0 flex gap-2";
   
     const icon = document.createElement('span');
-    icon.textContent = "✓"; // yippie
+    icon.textContent = '\u2728'; // sparkle icon for emphasis
     icon.className = "text-green-400 font-bold";
     
     const text = document.createElement('span');
@@ -19,7 +19,7 @@ window.showToast = function(message) {
     toast.appendChild(icon);
     toast.appendChild(text);
     container.appendChild(toast);
-  // Trigger slide animation
+    // Trigger slide animation
     requestAnimationFrame(() => toast.classList.remove('translate-y-10', 'opacity-0'));
     // Remove after 3 seconds
     setTimeout(() => {
@@ -40,14 +40,24 @@ window.displayProduct = function(sid) {
         console.error("Product not found:", sid);
         return;
     }
+    let selectedSize = product.sizes && product.sizes.length > 0 ? product.sizes[0] : null;
+    
+    // Handle complex color objects or simple strings
+    let firstColor = null;
+    if (product.color) {
+        const c = Array.isArray(product.color) ? product.color[0] : product.color;
+        firstColor = typeof c === 'object' ? c.name : c;
+    }
+    let selectedColor = firstColor;
+
 
     // Populate text elements
     document.querySelector('#sp-name').textContent = product.name;
     document.querySelector('#sp-price').textContent = `$${Number(product.price).toFixed(2)}`;
     document.querySelector('#sp-desc').textContent = product.description;
-    document.querySelector('#sp-features').textContent = product.features || "N/A"; // Added features fallback
+    document.querySelector('#sp-features').textContent = product.features || "N/A";
 
-    // Set Image (Fixed and Uncommented)
+    // Set Image
     const imgElement = document.querySelector('#sp-image');
     if (product.image) {
         imgElement.src = product.image; 
@@ -62,16 +72,15 @@ window.displayProduct = function(sid) {
     document.querySelector('#crumb-category').textContent = product.category;
     document.querySelector('#crumb-product').textContent = product.name;
 
-    //  Reset Quantity Input
+    // Reset Quantity Input
     const qtyInput = document.querySelector('#sp-qty');
     if(qtyInput) qtyInput.value = 1;
 
 
-    // DYNAMIC SIZES
+    // DYNAMIC SIZES (Selectable & Tracked)
     const sizeContainer = document.querySelector('#sp-sizes');
     const sizeWrapper = document.querySelector('#sp-sizes-container');
     
-    // Clear previous buttons
     if (sizeContainer) sizeContainer.innerHTML = ''; 
 
     if (sizeContainer && sizeWrapper) {
@@ -80,13 +89,26 @@ window.displayProduct = function(sid) {
             
             product.sizes.forEach(size => {
                 const btn = document.createElement('button');
-                btn.className = 'border border-gray-300 px-4 py-2 text-sm text-gray-600 hover:border-black hover:text-black transition cursor-pointer';
+                
+                // Base Classes
+                const baseClass = 'h-10 min-w-[3rem] px-3 border text-sm font-medium transition-all cursor-pointer';
+                const inactiveClass = 'border-gray-300 bg-white text-gray-900 hover:border-black';
+                const activeClass = 'border-2 border-black bg-gray-50 text-black font-bold shadow-sm transform scale-105';
+
+                // Set initial style (Active if it matches default)
+                btn.className = (size === selectedSize) ? `${baseClass} ${activeClass}` : `${baseClass} ${inactiveClass}`;
                 btn.textContent = size;
 
-                // Click selection effect
+                // Click Selection Logic
                 btn.onclick = () => {
-                    Array.from(sizeContainer.children).forEach(b => b.className = 'border border-gray-300 px-4 py-2 text-sm text-gray-600 hover:border-black hover:text-black transition cursor-pointer');
-                    btn.className = 'border-2 border-black px-4 py-2 text-sm text-black font-bold cursor-pointer';
+                    selectedSize = size; // <--- UPDATE STATE
+                    
+                    // Reset visuals
+                    Array.from(sizeContainer.children).forEach(b => {
+                        b.className = `${baseClass} ${inactiveClass}`;
+                    });
+                    // Highlight active
+                    btn.className = `${baseClass} ${activeClass}`;
                 };
                 sizeContainer.appendChild(btn);
             });
@@ -95,15 +117,13 @@ window.displayProduct = function(sid) {
         }
     }
 
-    // DYNAMIC COLORS wooo
+    // DYNAMIC COLORS 
     const colorContainer = document.querySelector('#sp-colors');
     const colorWrapper = document.querySelector('#sp-colors-container');
     
-    // Clear previous buttons
     if (colorContainer) colorContainer.innerHTML = '';
 
     if (colorContainer && colorWrapper) {
-        // Handle array vs single object vs string
         let colors = [];
         if (product.color) {
             colors = Array.isArray(product.color) ? product.color : [product.color];
@@ -116,14 +136,29 @@ window.displayProduct = function(sid) {
                 const colorName = typeof c === 'object' ? c.name : c;
                 
                 const btn = document.createElement('button');
-                btn.className = 'w-8 h-8 border border-gray-300 rounded-sm hover:border-black transition cursor-pointer';
+                btn.className = 'w-10 h-10 border border-gray-300 hover:opacity-80 transition-all cursor-pointer shadow-sm';
                 btn.style.backgroundColor = colorName.toLowerCase(); 
                 btn.title = colorName; 
 
-                // Selection effect
+                // Initial Active State
+                if (colorName === selectedColor) {
+                    btn.classList.remove('border-gray-300');
+                    btn.classList.add('ring-2', 'ring-offset-2', 'ring-black', 'scale-110');
+                }
+
+                // Click Selection Logic
                 btn.onclick = () => {
-                    Array.from(colorContainer.children).forEach(b => b.classList.remove('ring-2', 'ring-offset-1', 'ring-black'));
-                    btn.classList.add('ring-2', 'ring-offset-1', 'ring-black');
+                    selectedColor = colorName; // <--- UPDATE STATE
+
+                    // Reset siblings
+                    Array.from(colorContainer.children).forEach(b => {
+                        b.classList.remove('ring-2', 'ring-offset-2', 'ring-black', 'scale-110');
+                        b.classList.add('border-gray-300');
+                    });
+
+                    // Activate clicked
+                    btn.classList.remove('border-gray-300');
+                    btn.classList.add('ring-2', 'ring-offset-2', 'ring-black', 'scale-110');
                 };
                 colorContainer.appendChild(btn);
             });
@@ -132,32 +167,29 @@ window.displayProduct = function(sid) {
         }
     }
 
-    const btn = document.querySelector('#sp-add-btn');
-        const newBtn = btn.cloneNode(true); // remove old event listeners
-        btn.parentNode.replaceChild(newBtn, btn);
 
-        newBtn.addEventListener('click', () => {
-            // Get the number from the input box
-            const qtyInput = document.querySelector('#sp-qty');
-            const qty = parseInt(qtyInput.value) || 1;
-            addToCart(product.id, qty);
-                
-            // Show Toast
-            window.showToast(`Added ${qty} x ${product.name} to cart!`);
+    // Add to Cart button 
+    const btn = document.querySelector('#sp-add-btn');
+    const newBtn = btn.cloneNode(true); 
+    btn.parentNode.replaceChild(newBtn, btn);
+
+    newBtn.addEventListener('click', () => {
+        const quantity = parseInt(document.querySelector('#sp-qty').value) || 1;
+        
+        addToCart(product.id, quantity, selectedSize, selectedColor); 
+        
+        const detailString = selectedSize ? `(${selectedSize})` : '';
+        window.showToast(`Added ${quantity} x ${product.name} ${detailString} to cart!`);
     });
 
-    // Switch View manually
+    // Switch View
     document.querySelectorAll("main > article").forEach(page => {
         page.classList.add('hidden');
         page.classList.remove('block');
     });
-    
-    // Show this page
     const spView = document.querySelector('#singleproduct');
     spView.classList.remove('hidden');
     spView.classList.add('block');
-    
-    // Scroll to top
     window.scrollTo(0,0);
 };
 
@@ -210,31 +242,47 @@ function route(e) {
 }
 
 function render(items) {
-  const test = document.querySelector("#test");
-  test.innerHTML = '';
-  for(const item of items) {
-    const div = document.createElement("div"); 
-      
-    // this entire div section should be a template btw.
-    div.textContent = `Item: ${item.name}, Gender: ${item.gender}, Category: ${item.category} `
-    div.setAttribute("data-sid", item.id); // this is how we should properly get our item info for each item
+  const container = document.querySelector("#home"); 
+  // Clear safely
+  while(container.firstChild) container.removeChild(container.firstChild);
+
+  // Create Hero
+  const hero = document.createElement('div');
+  hero.className = "bg-blue-600 text-white p-12 text-center mb-8 shadow-md";
+  const h1 = document.createElement('h1');
+  h1.className = "text-5xl font-bold mb-4";
+  h1.textContent = "Computer Science Collection 2025";
+  hero.appendChild(h1);
+  container.appendChild(hero);
+
+  // Create Grid
+  const grid = document.createElement('div');
+  grid.className = "grid grid-cols-1 md:grid-cols-3 gap-8 p-4 max-w-6xl mx-auto";
+
+  // Show only 3 items
+  items.slice(0, 3).forEach(item => {
+    const card = document.createElement("div"); 
+    card.className = "border p-4 rounded hover:shadow-xl transition bg-white cursor-pointer flex flex-col items-center text-center";
     
-    const addButton = document.createElement("button");
-    addButton.textContent = "Add to Cart";
-    addButton.classList.add("add-item");
-    addButton.classList.add("hover:cursor-pointer") 
-    div.appendChild(addButton);
-    test.appendChild(div)
-  }
+    const img = document.createElement("img");
+    img.src = item.image ? item.image : "https://via.placeholder.com/400x400?text=No+Image";
+    img.className = "w-full h-64 object-contain mb-4";
+    
+    const h3 = document.createElement("h3");
+    h3.textContent = item.name;
+    h3.className = "font-bold text-lg";
 
-  test.addEventListener("click", (e) => {
-    if (e.target.classList.contains("add-item")) {
-      addToCart(e.target.parentNode.dataset.sid); // cool passthrough!!
-    }
-  })
+    const price = document.createElement("p");
+    price.textContent = `$${Number(item.price).toFixed(2)}`;
+    
+    card.appendChild(img);
+    card.appendChild(h3);
+    card.appendChild(price);
+    
+    card.addEventListener('click', () => window.displayProduct(item.id));
 
-  // Add event listener to cart pages
-  document.querySelector("#cart-items")
-  .addEventListener("click", removeFromCart);
-  
+    grid.appendChild(card);
+  });
+
+  container.appendChild(grid);
 }

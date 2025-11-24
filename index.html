@@ -131,12 +131,12 @@
                         <div class="flex flex-col w-full md:w-1/2 gap-4">
                             <div class="aspect-[4/3] bg-gray-100 flex items-center justify-center overflow-hidden rounded-sm">
                                 <img id="sp-image" class="w-full h-full object-contain mix-blend-multiply hidden">
-                                <span class="text-gray-400 text-sm">Main Product image placeholder</span>
+                                <span class="text-gray-400 text-sm hidden">Main Product image placeholder</span>
                             </div>
                             
                             <div class="flex gap-4 h-32">
-                                <div class="w-1/3 bg-gray-100 flex items-center justify-center text-xs text-gray-400">Placeholder</div>
-                                <div class="w-1/3 bg-gray-100 flex items-center justify-center text-xs text-gray-400">Placeholder</div>
+                                <div class="w-1/3 bg-gray-100 flex items-center justify-center text-xs text-gray-400 border">Placeholder</div>
+                                <div class="w-1/3 bg-gray-100 flex items-center justify-center text-xs text-gray-400 border">Placeholder</div>
                             </div>
                         </div>
 
@@ -159,24 +159,24 @@
                                 <p id="sp-features" class="text-gray-600 text-sm">Cotton / Polyester Blend</p>
                             </div>
 
-                            <div class="pt-4 flex flex-col gap-6">
+                            <div id="sp-sizes-container" class="flex flex-col gap-2">
+                                <span class="font-bold text-gray-900 text-sm uppercase">Size</span>
+                                <div id="sp-sizes" class="flex gap-2 flex-wrap"></div>
+                            </div>
+
+                            <div id="sp-colors-container" class="flex flex-col gap-2">
+                                <span class="font-bold text-gray-900 text-sm uppercase">Color</span>
+                                <div id="sp-colors" class="flex gap-2 flex-wrap"></div>
+                            </div>
+
+                            <div class="pt-4 flex flex-col gap-6 border-t border-gray-200 mt-2">
                                 
                                 <div class="flex items-center gap-4">
                                     <label class="font-bold text-gray-900 text-sm uppercase">Quantity</label>
                                     <input type="number" id="sp-qty" value="1" min="1" class="border border-gray-300 p-2 w-16 text-center rounded-sm">
                                 </div>
 
-                                <div id="sp-sizes-container" class="flex flex-col gap-2">
-                                    <span class="font-bold text-gray-900 text-sm uppercase">Size</span>
-                                    <div id="sp-sizes" class="flex gap-2 flex-wrap"></div>
-                                </div>
-
-                                <div id="sp-colors-container" class="flex flex-col gap-2">
-                                    <span class="font-bold text-gray-900 text-sm uppercase">Color</span>
-                                    <div id="sp-colors" class="flex gap-2 flex-wrap"></div>
-                                </div>
-
-                                <button id="sp-add-btn" class="mt-2 w-48 bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold py-3 px-6 rounded-sm shadow-sm transition-colors flex items-center justify-center gap-2 border border-gray-300">
+                                <button id="sp-add-btn" class="mt-2 w-full md:w-64 bg-gray-900 hover:bg-black text-white font-bold py-3 px-6 rounded-sm shadow-sm transition-colors flex items-center justify-center gap-2">
                                     <span>+</span> Add to Cart
                                 </button>
                             </div>
@@ -227,48 +227,93 @@
             </article>
 
 
-            <article class="hidden px-6" id="cart">
-                <section id="cart-items" class="w-full"></section>
-                <div class="flex flex-row">
-                    <section id="cart-shipping" class="w-1/3 m-4">
-                        <h2 class="mx-4 text-xl">Shipping</h2>
-                        <form class="border p-4 flex flex-col">
-                            <select name="type" id="shipping-type" class="w-36 border p-2 m-2 hover:cursor-pointer hover:bg-gray-200">
-                                <option value="standard">Standard</option>
-                                <option value="express">Express</option>
-                                <option value="priority">Priority</option>
-                            </select>
-                            <select name="dest" id="shipping-dest" class="w-36 border p-2 m-2 hover:cursor-pointer hover:bg-gray-200">
-                                <option value="CA">Canada</option>
-                                <option value="US">United States</option>
-                                <option value="INT">International</option>
-                            </select>
-                        </form>
+            <article class="hidden px-10 py-8" id="cart">
+                <div class="bg-gray-100 border-[30px] border-white shadow-sm max-w-6xl mx-auto p-8">
+                <h2 class="text-center text-2xl font-bold mb-8">Shopping Cart</h2>
+
+                <div class="grid grid-cols-12 gap-4 border-b pb-2 font-bold text-sm text-gray-600 text-center">
+                    <div class="col-span-5 text-left pl-12">Items</div>
+                    <div class="col-span-1">Color</div>
+                    <div class="col-span-1">Size</div>
+                    <div class="col-span-1">Price</div>
+                    <div class="col-span-2">Quantity</div>
+                    <div class="col-span-2 text-right pr-4">Subtotal</div>
+                </div>
+
+                <section id="cart-items" class="w-full mb-12">
                     </section>
-                    <section id="cart-summary" class="w-2/3 m-4">
-                        <h2 class="mx-4 text-xl">Summary</h2>
-                        <div class="border p-4">
-                            <p>
-                                Merchandise <span id="cart-subtotal"></span>
-                            </p>
-                            <p>
-                                Shipping <span id="cart-shipping"></span>
-                            </p>
-                            <p>
-                                Taxes <span id="cart-taxes"></span>
-                            </p>
-                            <p>
-                                Total <span id="cart-total"></span>
-                            </p>
+                </div> <!-- JUST INCASE I PUT IT IN WRONG SPOT-->
+                <div class="flex flex-row justify-between gap-12">
+                    
+                    <section id="cart-shipping" class="w-1/3 pt-4">
+                        <h3 class="text-lg font-bold mb-4">Shipping</h3>
+                        <div class="bg-gray-50 p-6 rounded border">
+                            <form class="flex flex-col gap-4">
+                                <select id="shipping-type" class="border p-2 rounded bg-white">
+                                    <option value="standard">Standard</option>
+                                    <option value="express">Express</option>
+                                    <option value="priority">Priority</option>
+                                </select>
+                                <select id="shipping-dest" class="border p-2 rounded bg-white">
+                                    <option value="CA">Canada</option>
+                                    <option value="US">United States</option>
+                                    <option value="INT">International</option>
+                                </select>
+                            </form>
                         </div>
-                        <div id="checkout" class="m-4">
-                            <button id="checkout-button" class="border flex p-2 m-auto text-xl hover:cursor-pointer hover:bg-gray-200">
+                    </section>
+                    
+                    <section id="cart-summary" class="w-1/3 pt-4">
+                        <h3 class="text-lg font-bold mb-4">Summary</h3>
+                        <div class="border p-6 rounded space-y-3">
+                            <div class="flex justify-between text-gray-600">
+                                <span>Merchandise</span>
+                                <span id="cart-subtotal">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-gray-600">
+                                <span>Shipping</span>
+                                <span id="cart-shipping-cost">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-gray-600">
+                                <span>Tax</span>
+                                <span id="cart-taxes">$0.00</span>
+                            </div>
+                            <hr class="my-2">
+                            <div class="flex justify-between font-bold text-xl">
+                                <span>Total</span>
+                                <span id="cart-total">$0.00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 text-right">
+                            <button id="checkout-button" class="bg-gray-300 text-gray-800 px-8 py-3 font-bold rounded shadow hover:bg-gray-400 transition">
                                 Checkout
                             </button>
                         </div>
                     </section>
                 </div>
             </article>
+
+            <template id="cart-item-template">
+                <div class="cart-item grid grid-cols-12 gap-4 items-center border-b py-6 text-center text-sm">
+                    
+                    <div class="col-span-5 flex items-center text-left">
+                        <button class="remove-item bg-gray-300 text-white w-6 h-6 flex items-center justify-center rounded hover:bg-red-500 transition mr-4 ml-2 font-bold">-</button>
+                        
+                        <div class="item-name font-medium ml-4 text-base"></div>
+                    </div>
+                    
+                    <div class="col-span-1 flex justify-center">
+                        <div class="item-color w-5 h-5 rounded shadow-sm"></div>
+                    </div>
+                    <div class="col-span-1 flex justify-center">
+                        <span class="item-size border px-2 py-1 text-xs text-gray-500 rounded">M</span>
+                    </div>
+                    <div class="col-span-1 item-price text-gray-600"></div>
+                    <div class="col-span-2 item-quantity text-base"></div>
+                    <div class="col-span-2 item-subtotal font-bold text-right pr-4"></div>
+                </div>
+            </template>
 <!---------------------------------------------------- CONSTRUCTION ZONE ------------------------------------------------------------------------------------------------>
            <article class="hidden px-6" id="browse">
     <!-- One shared grey card for filters + results -->

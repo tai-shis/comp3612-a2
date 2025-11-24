@@ -1,128 +1,200 @@
+// Update Cart counter
 function updateCartCounter() {
   const cart = JSON.parse(localStorage.getItem('cart')) || [];
   const cartCounter = document.querySelector("#cart-counter");
-  const totalItems = cart.reduce((total, item) => total + item.qty, 0);
-  cartCounter.textContent = totalItems;
-}
-
-// Function to add an item to the cart
-export function addToCart(sid, qty = 1) { 
-  let cart = JSON.parse(localStorage.getItem('cart')) || [];
-  
-  // Check if item already exists in cart
-  const existingItem = cart.find(item => item.sid == sid); 
-  
-  if (existingItem) {
-    // If it exists, add the new quantity to the existing quantity
-    existingItem.qty += qty; 
-  } else {
-    // If new, push it with the specified quantity
-    cart.push({ sid: sid, qty: qty }); 
-  }
-
-  localStorage.setItem('cart', JSON.stringify(cart));
-  
-  // Update the UI (Counter and Cart View)
-  renderCart();
-}
-
-export function removeFromCart(e) {
-  if (e.target.classList.contains("remove-item")) {
-    // visually remove
-    // e.target.parentNode.remove();
-
-    // whoo this is a block of code
-    // go through the cart in localStorage, find object with the matching sid
-    const cart = JSON.parse(localStorage.getItem('cart'))
-    const removedItem = cart.find(item => item.sid == e.target.parentNode.dataset.sid);
-    // then we remove the item from the cart using filter; from localstorage
-    localStorage.setItem('cart', JSON.stringify(cart.filter(item => item !== removedItem)));
-    renderCart();
+  if (cartCounter) {
+      const totalItems = cart.reduce((total, item) => total + item.qty, 0);
+      cartCounter.textContent = totalItems;
   }
 }
 
-// might as well return the sum of prices here.
-function renderCartItems(cart, items) {
+// Adds items to LocalStorage
+export function addToCart(sid, qty = 1, size = null, color = null) {
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // We now check if ID *AND* Size *AND* Color match
+    const existingItem = cart.find(item => 
+        item.sid == sid && 
+        item.size == size && 
+        item.color == color
+    );
+
+    if (existingItem) {
+        existingItem.qty += qty;
+    } else {
+        // Push the new details into the object
+        cart.push({ 
+            sid: sid, 
+            qty: qty, 
+            size: size, 
+            color: color 
+        });
+    }
+
+    // Save back to local storage
+    localStorage.setItem('cart', JSON.stringify(cart));
+    if (typeof renderCart === 'function') renderCart(); 
+    window.dispatchEvent(new Event('storage'));
+}
+
+// Removes item from LocalStorage and re-renders
+export function removeItem(sid) {
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart = cart.filter(item => item.sid != sid);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    renderCart(); // Re-render the view
+}
+
+// --- RENDERING & CALCULATIONS ---
+
+function renderCartItems(cart, allItems) {
   const cartContainer = document.querySelector('#cart-items');
-  cartContainer.innerHTML = '';
+  
+  // Clear safely
+  while(cartContainer.firstChild) {
+      cartContainer.removeChild(cartContainer.firstChild);
+  }
 
-  const itemTemplate = document.querySelector('#cart-item-template');
+  if (cart.length === 0) {
+      const emptyMsg = document.createElement('div');
+      emptyMsg.className = "p-10 text-center text-gray-500 text-xl";
+      emptyMsg.textContent = "Your shopping cart is empty.";
+      cartContainer.appendChild(emptyMsg);
+      return 0;
+  }
 
   let subtotal = 0;
-  cart.forEach((item) => {
-    const clone = itemTemplate.content.cloneNode(true);
-    const product = items.find(prod => prod.id == item.sid);
-    clone.querySelector('.cart-item').setAttribute('data-sid', item.sid);
-    clone.querySelector('.item-name').textContent = product.name;
-    clone.querySelector('.item-color').classList.add(`bg-[${product.color[0].hex}]`) //product for now
-    // clone.querySelector('.item-size').textContent = item.size; // should be from cart
-    clone.querySelector('.item-price').textContent = product.price;
-    clone.querySelector('.item-quantity').textContent = item.qty;
+  const template = document.querySelector('#cart-item-template');
 
-    let itemSubtotal = product.price * item.qty;
-    subtotal += itemSubtotal;
-    clone.querySelector(`.item-subtotal`).textContent = `${itemSubtotal.toFixed(2)}`;
+  cart.forEach((cartItem) => {
+    const product = allItems.find(prod => prod.id == cartItem.sid);
+    if (!product) return;
+
+    const clone = template.content.cloneNode(true);
+    const row = clone.querySelector('.cart-item');
+    
+    // 1. Text Data
+    clone.querySelector('.item-name').textContent = product.name;
+    clone.querySelector('.item-price').textContent = `$${product.price.toFixed(2)}`;
+    clone.querySelector('.item-quantity').textContent = cartItem.qty;
+
+    // 2. Image Handling
+    const img = document.createElement('img');
+    if (product.image) {
+        img.src = product.image;
+    } else {
+        img.src = "https://via.placeholder.com/100?text=No+Img"; 
+    }
+    img.className = "w-20 h-24 object-contain border p-1 bg-white";
+    const nameDiv = clone.querySelector('.item-name');
+    nameDiv.parentNode.insertBefore(img, nameDiv);
+
+    //Color Box
+    const colorBox = clone.querySelector('.item-color');
+    const pColor = Array.isArray(product.color) ? product.color[0] : product.color;
+    const hex = pColor ? (pColor.hex || '#333') : '#333';
+    colorBox.style.backgroundColor = hex;
+
+    // Size
+    const sizeBox = clone.querySelector('.item-size');
+    sizeBox.textContent = cartItem.size || "N/A";
+
+    // Calculations
+    const itemTotal = product.price * cartItem.qty;
+    subtotal += itemTotal;
+    clone.querySelector('.item-subtotal').textContent = `$${itemTotal.toFixed(2)}`;
+
+    // Remove 
+    clone.querySelector('.remove-item').addEventListener('click', () => {
+        removeItem(cartItem.sid);
+    });
+
     cartContainer.appendChild(clone);
-  })
+  });
 
   return subtotal;
 }
 
-function getShippingCost(shippingInfo) {
-  const shippingRates = {
-    standard: { CA: 10, US: 15, INT: 20 },
-    express: { CA: 25, US: 25, INT: 30 },
-    priority: { CA: 35, US: 50, INT: 50 }
-  };
+function getShippingCost(subtotal, type, dest) {
+    if (subtotal > 500) return 0; 
 
-  return shippingRates[shippingInfo.type][shippingInfo.dest];
+    const rates = {
+        standard: { CA: 10, US: 15, INT: 20 },
+        express: { CA: 25, US: 25, INT: 30 },
+        priority: { CA: 35, US: 50, INT: 50 }
+    };
+
+    if (!rates[type] || rates[type][dest] === undefined) return 0;
+    return rates[type][dest];
 }
 
-// Will calculate and render shipping info, given the subtotal and shipping form data
-function renderCartSummary(subtotal, shippingInfo) {
-  const summary = document.querySelector('#cart-summary'); // reduce scope of query search
-  const shipping = subtotal > 500 ? 0 : getShippingCost(shippingInfo);
-  const taxes = shippingInfo.dest == 'CA' ? subtotal * 0.05 : 0;
-  const total = subtotal + shipping + taxes;
+function renderSummary(subtotal) {
+    const shippingType = document.querySelector('#shipping-type').value;
+    const shippingDest = document.querySelector('#shipping-dest').value;
 
-  summary.querySelector('#cart-subtotal').textContent = `$${subtotal.toFixed(2)}`;
-  summary.querySelector('#cart-shipping').textContent = `$${shipping.toFixed(2)}`;
-  summary.querySelector('#cart-taxes').textContent = `$${taxes.toFixed(2)}`;
-  summary.querySelector('#cart-total').textContent = `$${total.toFixed(2)}`;
+    // Calculate Shipping
+    const shippingCost = getShippingCost(subtotal, shippingType, shippingDest);
+    
+    // Calculate Tax (5% only if Canada)
+    const taxRate = shippingDest === 'CA' ? 0.05 : 0;
+    const taxCost = subtotal * taxRate;
+
+    const total = subtotal + shippingCost + taxCost;
+
+    // Update DOM
+    document.querySelector('#cart-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+    document.querySelector('#cart-shipping-cost').textContent = `$${shippingCost.toFixed(2)}`;
+    document.querySelector('#cart-taxes').textContent = `$${taxCost.toFixed(2)}`;
+    document.querySelector('#cart-total').textContent = `$${total.toFixed(2)}`;
+    
+    // Handle Checkout Button State
+    const checkoutBtn = document.querySelector('#checkout-button');
+    if(!checkoutBtn) return;
+
+    // Clone button to remove old listeners
+    const newBtn = checkoutBtn.cloneNode(true);
+    checkoutBtn.parentNode.replaceChild(newBtn, checkoutBtn);
+
+    if (subtotal === 0) {
+        newBtn.disabled = true;
+        newBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    } else {
+        newBtn.disabled = false;
+        newBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        
+        // Attach Checkout Event
+        newBtn.addEventListener('click', () => {
+            localStorage.removeItem('cart');
+            // Use global toast if available
+            if(window.showToast) window.showToast("Order placed successfully!");
+            else alert("Order placed!");
+            
+            renderCart(); // Clear UI
+            
+            // Optional: Redirect to home
+            setTimeout(() => {
+                 const homeBtn = document.querySelector('button[data-route="home"]');
+                 if(homeBtn) homeBtn.click();
+            }, 1500);
+        });
+    }
 }
 
-
-export function updateCart() {
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const items = JSON.parse(localStorage.getItem('items'));
-  const shippingInfo = JSON.parse(localStorage.getItem('shipping')) || { type: 'standard', dest: 'CA' };
-  
-  updateCartCounter();
-  // get subtotal when rendering so we dont have to loop more than once
-  const subtotal = renderCartItems(cart, items);
-  renderCartSummary(subtotal, shippingInfo);
-}
-
+// --- MAIN EXPORT ---
 export function renderCart() {
-  // Add Event handlers
-  const cart = document.querySelector('#cart');
-  cart.querySelector('#shipping-type').addEventListener("change", (e) => {
-    let shipping = JSON.parse(localStorage.getItem('shipping')) || { type: 'standard', dest: 'CA' };
-    shipping.type = e.target.value;
-    localStorage.setItem('shipping', JSON.stringify(shipping));
-    updateCart();
-  });
-  
-  cart.querySelector('#shipping-dest').addEventListener("change", (e) => {
-    let shipping = JSON.parse(localStorage.getItem('shipping')) || { type: 'standard', dest: 'CA' };
-    shipping.dest = e.target.value;
-    localStorage.setItem('shipping', JSON.stringify(shipping));
-    updateCart();
-  });
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const items = JSON.parse(localStorage.getItem('items')) || [];
+    
+    updateCartCounter();
 
-  cart.querySelector('#checkout-button').addEventListener("click", (e) => {
+    // Only try to render if we are actually on the cart page
+    if (!document.querySelector('#cart-items')) return;
 
-  })
+    const subtotal = renderCartItems(cart, items);
+    renderSummary(subtotal);
+    const sType = document.querySelector('#shipping-type');
+    const sDest = document.querySelector('#shipping-dest');
 
-  updateCart()
+    if(sType) sType.onchange = () => renderSummary(subtotal);
+    if(sDest) sDest.onchange = () => renderSummary(subtotal);
 }
