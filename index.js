@@ -1,5 +1,5 @@
 ﻿import { addToCart, renderCart } from "./cart.js";
-import { setupBrowse } from "./browse.js";
+import { setupBrowse, loadCategory } from "./browse.js";
 
 // Displays a temporary notification at the bottom right
 window.showToast = function(message) {
@@ -206,6 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const initialize = (items) => {
     localStorage.setItem('items', JSON.stringify(items));
     render(items);
+    renderGenderView(items, 'mens');
+    renderGenderView(items, 'womens');
     setupBrowse(items);
     // setupSingleProduct(items);  
     renderCart();
@@ -285,4 +287,70 @@ function render(items) {
   });
 
   container.appendChild(grid);
+}
+
+function renderGenderView(items, gender) {
+    const containerId = gender === 'mens' ? '#men' : '#women';
+    const container = document.querySelector(containerId);
+    if (!container) return;
+
+    // Clear existing
+    while (container.firstChild) container.removeChild(container.firstChild);
+
+    // Hero Section
+    const hero = document.createElement('div');
+    hero.className = "relative bg-gray-800 text-white mb-8 h-64 flex items-center justify-center overflow-hidden";
+    
+    // Hero Background (Placeholder)
+    const heroImg = document.createElement('img');
+    heroImg.src = `https://via.placeholder.com/1200x400?text=${gender}+Collection`;
+    heroImg.className = "absolute inset-0 w-full h-full object-cover opacity-50";
+    
+    const heroTitle = document.createElement('h1');
+    heroTitle.className = "relative z-10 text-5xl font-bold uppercase tracking-widest drop-shadow-md";
+    heroTitle.textContent = gender === 'mens' ? "Men's Collection" : "Women's Collection";
+    
+    hero.appendChild(heroImg);
+    hero.appendChild(heroTitle);
+    container.appendChild(hero);
+
+    // Category Grid
+    const grid = document.createElement('div');
+    grid.className = "grid grid-cols-2 md:grid-cols-4 gap-6 max-w-7xl mx-auto p-4";
+
+    // Categories found in data
+    const genderItems = items.filter(i => i.gender === gender);
+    const categories = [...new Set(genderItems.map(i => i.category))].sort();
+
+    categories.forEach(cat => {
+        // We try to find an item just to ensure this category actually exists for this gender
+        const catItem = items.find(i => i.gender === gender && i.category === cat);
+        
+        // If no items exist (e.g. Men's Dresses), skip rendering this tile
+        if (!catItem) return; 
+
+        const card = document.createElement('div');
+        card.className = "group relative h-80 bg-white border border-gray-200 cursor-pointer overflow-hidden hover:shadow-xl transition rounded-sm";
+        
+        const img = document.createElement('img');
+        // If real image exists, use it. Otherwise, generate a placeholder with text.
+        img.src = catItem.image ? catItem.image : `https://via.placeholder.com/300x400?text=${gender}+${cat}`;
+        img.className = "w-full h-full object-cover group-hover:scale-105 transition duration-500";
+        
+        const label = document.createElement('div');
+        label.className = "absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white px-6 py-2 text-center font-bold uppercase tracking-wide shadow-sm text-sm whitespace-nowrap";
+        label.textContent = cat;
+
+        card.appendChild(img);
+        card.appendChild(label);
+
+        // Go to Browse page with filters set
+        card.addEventListener('click', () => {
+            loadCategory(gender, cat);
+        });
+
+        grid.appendChild(card);
+    });
+
+    container.appendChild(grid);
 }

@@ -287,3 +287,36 @@ export function setupBrowse(items) {
   renderActiveFilterChips();
   applyBrowseFilters();
 }
+
+// Helper to load a specific category view from other pages
+export function loadCategory(gender, category) {
+  // Reset all filters
+  browseState.genders.clear();
+  browseState.categories.clear();
+  browseState.sizes.clear();
+  browseState.colors.clear();
+
+  // Set specific filters
+  if (gender) browseState.genders.add(gender);
+  if (category) browseState.categories.add(category);
+
+  // Reset all
+  document.querySelectorAll('#browse-filters input').forEach(i => i.checked = false);
+  document.querySelectorAll('#browse-filters button').forEach(b => b.classList.remove('font-bold', 'text-blue-600'));
+
+  // Check specific gender
+  if (gender) {
+      const btn = document.querySelector(`button[data-filter-value="${gender}"]`);
+      if(btn) btn.classList.add('font-bold', 'text-blue-600');
+  }
+  // Check specific category
+  if (category) {
+      const btn = document.querySelector(`button[data-filter-value="${category}"]`);
+      if(btn) btn.classList.add('font-bold', 'text-blue-600');
+  }
+
+  applyBrowseFilters(); 
+  document.querySelectorAll("main > article").forEach(el => el.classList.add('hidden'));
+  document.getElementById('browse').classList.remove('hidden');
+  document.getElementById('browse').classList.add('block');
+}
