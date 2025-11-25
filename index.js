@@ -198,20 +198,30 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const cached = localStorage.getItem('items');
 
-  // Lets initialize the routing buttons
+  // Initialize Routing Buttons
+
   document
     .querySelectorAll("#site-header button[data-route]")
     .forEach((b) => b.addEventListener("click", route));
 
+  // Initialize About Pop-up 
+  const aboutBtn = document.querySelector("#nav-about");
+  const aboutDialog = document.querySelector("#about");
+  
+  if (aboutBtn && aboutDialog) {
+      aboutBtn.addEventListener("click", () => {
+          aboutDialog.showModal(); // Opens as a modal overlay
+      });
+  }
   const initialize = (items) => {
     localStorage.setItem('items', JSON.stringify(items));
     render(items);
     renderGenderView(items, 'mens');
     renderGenderView(items, 'womens');
     setupBrowse(items);
-    // setupSingleProduct(items);  
+    // setupSingleProduct(items);
     renderCart();
-};
+  };
 
   if (cached) {
     initialize(JSON.parse(cached));
@@ -227,7 +237,6 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(data => initialize(data))
       .catch(error => console.log(`Error fetching item data: ${error}`));
   }
- 
 });
 
 function route(e) {
@@ -245,44 +254,103 @@ function route(e) {
 
 function render(items) {
   const container = document.querySelector("#home"); 
+  
   // Clear safely
   while(container.firstChild) container.removeChild(container.firstChild);
 
-  // Create Hero
+  // HERO SECTION 
   const hero = document.createElement('div');
-  hero.className = "bg-blue-600 text-white p-12 text-center mb-8 shadow-md";
+  // Relative positioning to stack text over image
+  hero.className = "relative h-[500px] bg-gray-900 flex items-center justify-center text-center px-4 mb-12 overflow-hidden shadow-xl";
+
+  // Background Image
+  const heroImg = document.createElement('img');
+  // High-quality tech/fashion placeholder
+  heroImg.src = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop"; 
+  heroImg.className = "absolute inset-0 w-full h-full object-cover opacity-40"; // Opacity makes text readable
+  
+  // Content Wrapper
+  const heroContent = document.createElement('div');
+  heroContent.className = "relative z-10 max-w-3xl mx-auto space-y-6";
+
   const h1 = document.createElement('h1');
-  h1.className = "text-5xl font-bold mb-4";
+  h1.className = "text-5xl md:text-7xl font-black text-white tracking-tight drop-shadow-lg";
   h1.textContent = "Computer Science Collection 2025";
-  hero.appendChild(h1);
+
+  const p = document.createElement('p');
+  p.className = "text-lg md:text-2xl text-gray-200 font-light tracking-wide";
+  p.textContent = "Upgrade your wardrobe with our latest arrivals designed for the modern developer.";
+
+  // Call to Action Button
+  const ctaBtn = document.createElement('button');
+  ctaBtn.className = "mt-6 px-8 py-4 bg-white text-gray-900 font-bold text-lg rounded-full shadow-lg hover:bg-blue-500 hover:text-white hover:scale-105 transition duration-300 ease-in-out transform cursor-pointer";
+  ctaBtn.textContent = "Shop Now";
+  
+  // Link CTA to Browse Page 
+  ctaBtn.addEventListener('click', () => {
+      const browseBtn = document.querySelector('button[data-route="browse"]');
+      if(browseBtn) browseBtn.click();
+  });
+
+  heroContent.appendChild(h1);
+  heroContent.appendChild(p);
+  heroContent.appendChild(ctaBtn);
+  hero.appendChild(heroImg);
+  hero.appendChild(heroContent);
+  
   container.appendChild(hero);
 
-  // Create Grid
-  const grid = document.createElement('div');
-  grid.className = "grid grid-cols-1 md:grid-cols-3 gap-8 p-4 max-w-6xl mx-auto";
+  // FEATURED SECTION HEADER
+  const featuredHeader = document.createElement('div');
+  featuredHeader.className = "text-center mb-10";
+  const h2 = document.createElement('h2');
+  h2.className = "text-3xl font-bold text-gray-900 uppercase tracking-widest inline-block border-b-4 border-blue-500 pb-2";
+  h2.textContent = "Featured Products";
+  featuredHeader.appendChild(h2);
+  container.appendChild(featuredHeader);
 
-  // Show only 3 items
+  // FEATURED GRID 
+  const grid = document.createElement('div');
+  grid.className = "grid grid-cols-1 md:grid-cols-3 gap-8 p-4 max-w-6xl mx-auto mb-16";
+
   items.slice(0, 3).forEach(item => {
     const card = document.createElement("div"); 
-    card.className = "border p-4 rounded hover:shadow-xl transition bg-white cursor-pointer flex flex-col items-center text-center";
+    card.className = "group relative bg-white rounded-xl shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer border border-gray-100";
+    
+    // Image Container
+    const imgContainer = document.createElement("div");
+    imgContainer.className = "aspect-[4/5] w-full overflow-hidden bg-gray-50 flex items-center justify-center";
     
     const img = document.createElement("img");
-    img.src = item.image ? item.image : "https://via.placeholder.com/400x400?text=No+Image";
-    img.className = "w-full h-64 object-contain mb-4";
+    if (item.image) {
+        img.src = item.image;
+    } else {
+        img.src = `https://via.placeholder.com/400x500?text=${item.name}`;
+    }
+    // Zoom effect on hover
+    img.className = "w-full h-full object-contain object-center group-hover:scale-110 transition-transform duration-500";
     
+    imgContainer.appendChild(img);
+    card.appendChild(imgContainer);
+
+    // Card Details
+    const details = document.createElement("div");
+    details.className = "p-6 text-center";
+
     const h3 = document.createElement("h3");
     h3.textContent = item.name;
-    h3.className = "font-bold text-lg";
+    h3.className = "font-bold text-lg text-gray-900 mb-2 group-hover:text-blue-600 transition-colors";
 
     const price = document.createElement("p");
     price.textContent = `$${Number(item.price).toFixed(2)}`;
+    price.className = "text-gray-500 font-medium";
     
-    card.appendChild(img);
-    card.appendChild(h3);
-    card.appendChild(price);
+    details.appendChild(h3);
+    details.appendChild(price);
+    card.appendChild(details);
     
+    // Link to Single Product
     card.addEventListener('click', () => window.displayProduct(item.id));
-
     grid.appendChild(card);
   });
 
@@ -301,7 +369,7 @@ function renderGenderView(items, gender) {
     const hero = document.createElement('div');
     hero.className = "relative bg-gray-800 text-white mb-8 h-64 flex items-center justify-center overflow-hidden";
     
-    // Hero Background (Placeholder)
+    // Hero Background 
     const heroImg = document.createElement('img');
     heroImg.src = `https://via.placeholder.com/1200x400?text=${gender}+Collection`;
     heroImg.className = "absolute inset-0 w-full h-full object-cover opacity-50";
@@ -326,7 +394,7 @@ function renderGenderView(items, gender) {
         // We try to find an item just to ensure this category actually exists for this gender
         const catItem = items.find(i => i.gender === gender && i.category === cat);
         
-        // If no items exist (e.g. Men's Dresses), skip rendering this tile
+        // If no items exist (e.g. Men's Dresses), skip rendering 
         if (!catItem) return; 
 
         const card = document.createElement('div');

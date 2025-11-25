@@ -87,7 +87,7 @@
                 <button data-route="women" class="link">Women</button> |
                 <button data-route="men" class="link">Men</button> |
                 <button data-route="browse" class="link">Browse</button> |
-                <button data-route="about" class="link">About</button>
+                <button id="nav-about" class="link">About</button>
             </nav>
 
             <!-- span of this button will be changed dynamically -->
@@ -711,9 +711,15 @@
 </article>
 
 <!---------------------------------------------------- CONSTRUCTION ZONE ------------------------------------------------------------------------------------------------>
-            <dialog id="about"></dialog>
+            
         </main>
-        <footer>
+        <footer class="bg-gray-900 text-white py-8 mt-12">
+            <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+                <p>&copy; 2025 COMP3612 Assignment 2 Joseph Mills, Tai Shishiba</p>
+                <a href="https://github.com/tai-shis/comp3612-a2" target="_blank" class="hover:underline text-gray-400">
+                    View Source on GitHub
+                </a>
+            </div>
         </footer>
         <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
         <template id="cart-item-template">
@@ -726,6 +732,36 @@
                 <span class="item-quantity px-2"></span>
                 <span class="item-subtotal px-2"></span>
             </div>
-        </template>    
+        </template>  
+        <dialog id="about" class="m-auto p-8 rounded-lg shadow-2xl w-full max-w-md backdrop:bg-black/60 border border-gray-200 text-left">
+                <div class="flex justify-between items-center mb-4 border-b pb-2">
+                    <h2 class="text-2xl font-bold text-gray-900">About This Site</h2>
+                </div>
+                
+                <div class="space-y-4 text-sm text-gray-600">
+                    <p><strong class="text-gray-900">Course:</strong> COMP 3612 - Web Development</p>
+                    <p><strong class="text-gray-900">Assignment:</strong> #2 - Single Page Application</p>
+                    <p><strong class="text-gray-900">Student:</strong> Joseph Mills, Tai Shishiba</p>
+                    <p><strong class="text-gray-900">Technologies:</strong> JavaScript, Tailwind CSS, HTML5 Templates</p>
+                    
+                    <div class="mt-6 p-4 bg-gray-50 rounded border border-gray-200 text-xs leading-relaxed">
+                        <p class="font-bold text-gray-800 mb-2 uppercase tracking-wide">Credits & Sources:</p>
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li>Images via <a href="https://unsplash.com" class="text-blue-600 hover:underline">Unsplash</a> & Placeholder.com</li>
+                            <li>Icons via Unicode Symbols</li>
+                            <li>Toast Logic based on Lab 9b concepts</li>
+                            <li>Data provided by course instructor</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-right">
+                    <form method="dialog">
+                        <button class="bg-gray-900 text-white px-6 py-2 rounded hover:bg-gray-700 transition shadow-sm font-medium">
+                            Close
+                        </button>
+                    </form>
+                </div>
+        </dialog>  
     </body>
 </html>
