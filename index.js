@@ -72,6 +72,8 @@ window.displayProduct = function(sid) {
     document.querySelector('#crumb-category').textContent = product.category;
     document.querySelector('#crumb-product').textContent = product.name;
 
+    setupBreadcrumbs(product);
+
     // Reset Quantity Input
     const qtyInput = document.querySelector('#sp-qty');
     if(qtyInput) qtyInput.value = 1;
@@ -471,4 +473,50 @@ function renderGenderView(items, gender) {
     });
 
     container.appendChild(grid);
+}
+
+function setupBreadcrumbs(product) {
+    // Select elements
+    const oldHome = document.querySelector('#crumb-home');
+    const oldGender = document.querySelector('#crumb-gender');
+    const oldCategory = document.querySelector('#crumb-category');
+
+    // Helper to replace an element with a clone
+    const replaceWithClone = (el) => {
+        const newEl = el.cloneNode(true);
+        el.parentNode.replaceChild(newEl, el);
+        return newEl;
+    };
+
+    // Create fresh elements
+    const breadHome = replaceWithClone(oldHome);
+    const breadGender = replaceWithClone(oldGender);
+    const breadCategory = replaceWithClone(oldCategory);
+
+    // 4. Add Event Listeners
+    breadHome.addEventListener('click', (e) => {
+        e.preventDefault(); // As taught in Lab 9a [cite: 5749]
+        document.querySelector('button[data-route="home"]').click();
+    });
+
+    breadGender.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Ensure lowercase to match your HTML ID (e.g., 'men' not 'Men')
+        let routeId = product.gender.toLowerCase(); 
+        if (routeId === 'mens') routeId = 'men';
+        if (routeId === 'womens') routeId = 'women';
+        const navBtn = document.querySelector(`button[data-route="${routeId}"]`);
+        if (navBtn) navBtn.click();
+        else {
+            console.error(`Navigation button not found for route: ${routeId}`);
+        }
+    });
+
+    breadCategory.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Import browse.js dynamically to avoid circular dependency issues if needed
+        import('./browse.js').then(module => {
+            module.loadCategory(product.gender, product.category);
+        });
+    });
 }
