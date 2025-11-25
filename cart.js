@@ -38,11 +38,12 @@ export function addToCart(sid, qty = 1, size = null, color = null) {
 }
 
 // Removes item from LocalStorage and re-renders
-export function removeItem(sid) {
+export function removeItem(index) {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    cart = cart.filter(item => item.sid != sid);
+    // Remove exactly one item at that specific index
+    cart.splice(index, 1);
     localStorage.setItem('cart', JSON.stringify(cart));
-    renderCart(); // Re-render the view
+    renderCart();
 }
 
 // --- RENDERING & CALCULATIONS ---
@@ -66,19 +67,19 @@ function renderCartItems(cart, allItems) {
   let subtotal = 0;
   const template = document.querySelector('#cart-item-template');
 
-  cart.forEach((cartItem) => {
+  cart.forEach((cartItem, index) => {
     const product = allItems.find(prod => prod.id == cartItem.sid);
     if (!product) return;
 
     const clone = template.content.cloneNode(true);
     const row = clone.querySelector('.cart-item');
     
-    // 1. Text Data
+    // Text Data
     clone.querySelector('.item-name').textContent = product.name;
     clone.querySelector('.item-price').textContent = `$${product.price.toFixed(2)}`;
     clone.querySelector('.item-quantity').textContent = cartItem.qty;
 
-    // 2. Image Handling
+    // Image Handling
     const img = document.createElement('img');
     if (product.image) {
         img.src = product.image;
@@ -106,7 +107,7 @@ function renderCartItems(cart, allItems) {
 
     // Remove 
     clone.querySelector('.remove-item').addEventListener('click', () => {
-        removeItem(cartItem.sid);
+        removeItem(index); 
     });
 
     cartContainer.appendChild(clone);
