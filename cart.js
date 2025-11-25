@@ -13,6 +13,24 @@ function updateCartCounter() {
 export function addToCart(sid, qty = 1, size = null, color = null) {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
+
+    if (size == null || color == null) {
+      let items = JSON.parse(localStorage.getItem('items')) || [];
+      const product = items.find(item => item.id == sid);
+      if (!product) {
+          console.error("Product not found for sid:", sid);
+          return;
+      }
+
+      // just default to first available size/color
+      if (size == null) {
+        size = product.sizes[0]
+      }
+      if (color == null) {
+        color = product.color[0].hex
+      }
+    }
+
     // We now check if ID *AND* Size *AND* Color match
     const existingItem = cart.find(item => 
         item.sid == sid && 
