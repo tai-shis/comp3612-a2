@@ -1,5 +1,5 @@
 import { addToCart } from "./cart.js";
-
+import { getProductImage } from "./index.js";
 export const browseState = {
   genders: new Set(),
   categories: new Set(),
@@ -45,7 +45,7 @@ function renderBrowseList(items) {
 
     const img = document.createElement("img");
     
-    img.src = p.image; 
+    img.src = getProductImage(p);
     img.alt = p.name;
     img.className = "max-h-full max-w-full object-contain";
 

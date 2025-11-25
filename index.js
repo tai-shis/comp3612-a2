@@ -58,14 +58,15 @@ window.displayProduct = function(sid) {
     document.querySelector('#sp-features').textContent = product.features || "N/A";
 
     // Set Image
+    // const imgElement = document.querySelector('#sp-image');
+    // if (product.image) {
+    //     imgElement.src = product.image; 
+    //     imgElement.alt = product.name;
+    //     imgElement.classList.remove('hidden');
+    // } else {
+    //     imgElement.classList.add('hidden');
+    // }
     const imgElement = document.querySelector('#sp-image');
-    if (product.image) {
-        imgElement.src = product.image; 
-        imgElement.alt = product.name;
-        imgElement.classList.remove('hidden');
-    } else {
-        imgElement.classList.add('hidden');
-    }
 
     // Update Breadcrumbs 
     document.querySelector('#crumb-gender').textContent = product.gender;
@@ -201,7 +202,7 @@ window.displayProduct = function(sid) {
                 const imgDiv = document.createElement('div');
                 imgDiv.className = "aspect-square bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden";
                 const img = document.createElement('img');
-                img.src = relItem.image ? relItem.image : "https://via.placeholder.com/150?text=No+Img";
+                img.src = getProductImage(item);
                 img.className = "w-full h-full object-contain group-hover:scale-110 transition duration-300";
                 imgDiv.appendChild(img);
 
@@ -292,96 +293,109 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function route(e) {
-  const pages = document.querySelectorAll("main > *");
-  for(const page of pages) {
-      if(page.id != e.target.dataset.route) {
-          page.classList.remove("block");
-          page.classList.add("hidden");
-      } else {
-          page.classList.remove("hidden");
-          page.classList.add("block");
-      }
-  } 
-}
+    const targetBtn = e.target.closest('button');
+    if (!targetBtn) return;
 
-function render(items) {
-  const container = document.querySelector("#home"); 
-  
-  // Clear safely
-  while(container.firstChild) container.removeChild(container.firstChild);
+    // Get the route ID 
+    const routeId = targetBtn.dataset.route;
 
-  // HERO SECTION 
-  const hero = document.createElement('div');
-  // Relative positioning to stack text over image
-  hero.className = "relative h-[500px] bg-gray-900 flex items-center justify-center text-center px-4 mb-12 overflow-hidden shadow-xl";
+    // Debugging
+    console.log("Routing to:", routeId);
 
-  // Background Image
-  const heroImg = document.createElement('img');
-  // High-quality tech/fashion placeholder
-  heroImg.src = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1999&auto=format&fit=crop"; 
-  heroImg.className = "absolute inset-0 w-full h-full object-cover opacity-40"; // Opacity makes text readable
-  
-  // Content Wrapper
-  const heroContent = document.createElement('div');
-  heroContent.className = "relative z-10 max-w-3xl mx-auto space-y-6";
+    // Switch Views
+    const pages = document.querySelectorAll("main > article");
 
-  const h1 = document.createElement('h1');
-  h1.className = "text-5xl md:text-7xl font-black text-white tracking-tight drop-shadow-lg";
-  h1.textContent = "Computer Science Collection 2025";
+    for (const page of pages) {
+        if (page.id === routeId) {
+            // Show the matching page
+            page.classList.remove("hidden");
+            page.classList.add("block");
+        } else {
+            // Hide all others
+            page.classList.remove("block");
+            page.classList.add("hidden");
+        }
+    }
 
-  const p = document.createElement('p');
-  p.className = "text-lg md:text-2xl text-gray-200 font-light tracking-wide";
-  p.textContent = "Upgrade your wardrobe with our latest arrivals designed for the modern developer.";
+    window.scrollTo(0, 0);
+    }
 
-  // Call to Action Button
-  const ctaBtn = document.createElement('button');
-  ctaBtn.className = "mt-6 px-8 py-4 bg-white text-gray-900 font-bold text-lg rounded-full shadow-lg hover:bg-blue-500 hover:text-white hover:scale-105 transition duration-300 ease-in-out transform cursor-pointer";
-  ctaBtn.textContent = "Shop Now";
-  
-  // Link CTA to Browse Page 
-  ctaBtn.addEventListener('click', () => {
-      const browseBtn = document.querySelector('button[data-route="browse"]');
-      if(browseBtn) browseBtn.click();
-  });
+    function render(items) {
+    const container = document.querySelector("#home"); 
 
-  heroContent.appendChild(h1);
-  heroContent.appendChild(p);
-  heroContent.appendChild(ctaBtn);
-  hero.appendChild(heroImg);
-  hero.appendChild(heroContent);
-  
-  container.appendChild(hero);
+    // Clear safely
+    while(container.firstChild) container.removeChild(container.firstChild);
 
-  // FEATURED SECTION HEADER
-  const featuredHeader = document.createElement('div');
-  featuredHeader.className = "text-center mb-10";
-  const h2 = document.createElement('h2');
-  h2.className = "text-3xl font-bold text-gray-900 uppercase tracking-widest inline-block border-b-4 border-blue-500 pb-2";
-  h2.textContent = "Featured Products";
-  featuredHeader.appendChild(h2);
-  container.appendChild(featuredHeader);
+    // HERO SECTION 
+    const hero = document.createElement('div');
+    // Relative positioning to stack text over image
+    hero.className = "relative h-[500px] bg-gray-900 flex items-center justify-center text-center px-4 mb-12 overflow-hidden shadow-xl";
 
-  // FEATURED GRID 
-  const grid = document.createElement('div');
-  grid.className = "grid grid-cols-1 md:grid-cols-3 gap-8 p-4 max-w-6xl mx-auto mb-16";
+    // Background Image
+    const heroImg = document.createElement('img');
+    // High-quality tech/fashion placeholder
+    heroImg.src = "images/hero-bg.jpg";
+    heroImg.className = "absolute inset-0 w-full h-full object-cover opacity-40"; // Opacity makes text readable
 
-  items.slice(0, 3).forEach(item => {
+    // Content Wrapper
+    const heroContent = document.createElement('div');
+    heroContent.className = "relative z-10 max-w-3xl mx-auto space-y-6";
+
+    const h1 = document.createElement('h1');
+    h1.className = "text-5xl md:text-7xl font-black text-white tracking-tight drop-shadow-lg";
+    h1.textContent = "Computer Science Collection 2025";
+
+    const p = document.createElement('p');
+    p.className = "text-lg md:text-2xl text-gray-200 font-light tracking-wide";
+    p.textContent = "Upgrade your wardrobe with our latest arrivals designed for the modern developer.";
+
+    // Call to Action Button
+    const ctaBtn = document.createElement('button');
+    ctaBtn.className = "mt-6 px-8 py-4 bg-white text-gray-900 font-bold text-lg rounded-full shadow-lg hover:bg-blue-500 hover:text-white hover:scale-105 transition duration-300 ease-in-out transform cursor-pointer";
+    ctaBtn.textContent = "Shop Now";
+
+    // Link CTA to Browse Page 
+    ctaBtn.addEventListener('click', () => {
+        const browseBtn = document.querySelector('button[data-route="browse"]');
+        if(browseBtn) browseBtn.click();
+    });
+
+    heroContent.appendChild(h1);
+    heroContent.appendChild(p);
+    heroContent.appendChild(ctaBtn);
+    hero.appendChild(heroImg);
+    hero.appendChild(heroContent);
+
+    container.appendChild(hero);
+
+    // FEATURED SECTION HEADER
+    const featuredHeader = document.createElement('div');
+    featuredHeader.className = "text-center mb-10";
+    const h2 = document.createElement('h2');
+    h2.className = "text-3xl font-bold text-gray-900 uppercase tracking-widest inline-block border-b-4 border-blue-500 pb-2";
+    h2.textContent = "Featured Products";
+    featuredHeader.appendChild(h2);
+    container.appendChild(featuredHeader);
+
+    // FEATURED GRID 
+    const grid = document.createElement('div');
+    grid.className = "grid grid-cols-1 md:grid-cols-3 gap-8 p-4 max-w-6xl mx-auto mb-16";
+
+    const shuffled = [...items].sort(() => 0.5 - Math.random());
+    const featuredItems = shuffled.slice(0, 3);
+    featuredItems.forEach(item => {
     const card = document.createElement("div"); 
     card.className = "group relative bg-white rounded-xl shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer border border-gray-100";
-    
+
     // Image Container
     const imgContainer = document.createElement("div");
     imgContainer.className = "aspect-[4/5] w-full overflow-hidden bg-gray-50 flex items-center justify-center";
-    
+
     const img = document.createElement("img");
-    if (item.image) {
-        img.src = item.image;
-    } else {
-        img.src = `https://via.placeholder.com/400x500?text=${item.name}`;
-    }
+    img.src = getProductImage(item);
     // Zoom effect on hover
     img.className = "w-full h-full object-contain object-center group-hover:scale-110 transition-transform duration-500";
-    
+
     imgContainer.appendChild(img);
     card.appendChild(imgContainer);
 
@@ -396,17 +410,17 @@ function render(items) {
     const price = document.createElement("p");
     price.textContent = `$${Number(item.price).toFixed(2)}`;
     price.className = "text-gray-500 font-medium";
-    
+
     details.appendChild(h3);
     details.appendChild(price);
     card.appendChild(details);
-    
+
     // Link to Single Product
     card.addEventListener('click', () => window.displayProduct(item.id));
     grid.appendChild(card);
-  });
+    });
 
-  container.appendChild(grid);
+    container.appendChild(grid);
 }
 
 function renderGenderView(items, gender) {
@@ -423,7 +437,13 @@ function renderGenderView(items, gender) {
     
     // Hero Background 
     const heroImg = document.createElement('img');
-    heroImg.src = `https://via.placeholder.com/1200x400?text=${gender}+Collection`;
+    
+    // Switch image based on gender
+    if (gender === 'mens') {
+        heroImg.src = "images/men-hero.webp";
+    } else {
+        heroImg.src = "images/women-hero.jpg";
+    }
     heroImg.className = "absolute inset-0 w-full h-full object-cover opacity-50";
     
     const heroTitle = document.createElement('h1');
@@ -453,8 +473,8 @@ function renderGenderView(items, gender) {
         card.className = "group relative h-80 bg-white border border-gray-200 cursor-pointer overflow-hidden hover:shadow-xl transition rounded-sm";
         
         const img = document.createElement('img');
-        // If real image exists, use it. Otherwise, generate a placeholder with text.
-        img.src = catItem.image ? catItem.image : `https://via.placeholder.com/300x400?text=${gender}+${cat}`;
+        // If real image exists, use it.
+        img.src = getProductImage(catItem);
         img.className = "w-full h-full object-cover group-hover:scale-105 transition duration-500";
         
         const label = document.createElement('div');
@@ -501,7 +521,7 @@ function setupBreadcrumbs(product) {
 
     breadGender.addEventListener('click', (e) => {
         e.preventDefault();
-        // Ensure lowercase to match your HTML ID (e.g., 'men' not 'Men')
+        // Ensure lowercase to match HTML ID 
         let routeId = product.gender.toLowerCase(); 
         if (routeId === 'mens') routeId = 'men';
         if (routeId === 'womens') routeId = 'women';
@@ -514,9 +534,14 @@ function setupBreadcrumbs(product) {
 
     breadCategory.addEventListener('click', (e) => {
         e.preventDefault();
-        // Import browse.js dynamically to avoid circular dependency issues if needed
         import('./browse.js').then(module => {
             module.loadCategory(product.gender, product.category);
         });
     });
+}
+
+export function getProductImage(product) {
+    if (product.image) return product.image;
+    // Generates a grey box with the product name written inside until images work
+    return `https://placehold.co/400x400/e2e8f0/1e293b?text=${encodeURIComponent(product.name)}`;
 }

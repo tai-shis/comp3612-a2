@@ -1,3 +1,4 @@
+import { getProductImage } from "./index.js";
 // Update Cart counter
 function updateCartCounter() {
   const cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -81,11 +82,9 @@ function renderCartItems(cart, allItems) {
 
     // Image Handling
     const img = document.createElement('img');
-    if (product.image) {
-        img.src = product.image;
-    } else {
-        img.src = "https://via.placeholder.com/100?text=No+Img"; 
-    }
+    img.src = getProductImage(product);
+    
+    img.className = "w-20 h-24 object-cover border p-1 bg-white";   
     img.className = "w-20 h-24 object-contain border p-1 bg-white";
     const nameDiv = clone.querySelector('.item-name');
     nameDiv.parentNode.insertBefore(img, nameDiv);
