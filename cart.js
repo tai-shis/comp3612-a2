@@ -27,7 +27,7 @@ export function addToCart(sid, qty = 1, size = null, color = null) {
         size = product.sizes[0]
       }
       if (color == null) {
-        color = product.color[0].hex
+        color = product.color[0].name
       }
     }
 
