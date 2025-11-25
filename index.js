@@ -55,7 +55,7 @@ window.displayProduct = function(sid) {
     document.querySelector('#sp-name').textContent = product.name;
     document.querySelector('#sp-price').textContent = `$${Number(product.price).toFixed(2)}`;
     document.querySelector('#sp-desc').textContent = product.description;
-    document.querySelector('#sp-features').textContent = product.features || "N/A";
+    document.querySelector('#sp-features').textContent = product.material || "N/A";
 
     // Set Image
     // const imgElement = document.querySelector('#sp-image');
@@ -90,34 +90,37 @@ window.displayProduct = function(sid) {
         if (product.sizes && product.sizes.length > 0) {
             sizeWrapper.classList.remove('hidden'); 
             
-            product.sizes.forEach(size => {
-                const btn = document.createElement('button');
-                
-                // Base Classes
-                const baseClass = 'h-10 min-w-[3rem] px-3 border text-sm font-medium transition-all cursor-pointer';
-                const inactiveClass = 'border-gray-300 bg-white text-gray-900 hover:border-black';
-                const activeClass = 'border-2 border-black bg-gray-50 text-black font-bold shadow-sm transform scale-105';
+            // Base Classes
+            const baseClass = 'h-10 min-w-[3rem] px-3 border text-sm font-medium transition-all cursor-pointer';
+            const inactiveClass = 'border-gray-300 bg-white text-gray-900 hover:border-black';
+            const activeClass = 'border-2 border-black bg-gray-50 text-black font-bold shadow-sm transform scale-105';
 
-                // Set initial style (Active if it matches default)
-                btn.className = (size === selectedSize) ? `${baseClass} ${activeClass}` : `${baseClass} ${inactiveClass}`;
-                btn.textContent = size;
-
-                // Click Selection Logic
-                btn.onclick = () => {
-                    selectedSize = size; // <--- UPDATE STATE
-                    
-                    // Reset visuals
-                    Array.from(sizeContainer.children).forEach(b => {
-                        b.className = `${baseClass} ${inactiveClass}`;
-                    });
-                    // Highlight active
-                    btn.className = `${baseClass} ${activeClass}`;
-                };
-                sizeContainer.appendChild(btn);
+            // Click Selection Logic
+            sizeContainer.addEventListener('click', (e) => {
+                if (e.target.tagName == 'BUTTON') {
+                  selectedSize = e.target.textContent; // <--- UPDATE STATE
+  
+                  // Reset visuals
+                  Array.from(sizeContainer.children).forEach(b => {
+                      b.className = `${baseClass} ${inactiveClass}`;
+                  });
+                  // Highlight active
+                  e.target.className = `${baseClass} ${activeClass}`;
+                }
             });
-        } else {
+            
+            product.sizes.forEach(size => {
+              const btn = document.createElement('button');
+              
+              // Set initial style (Active if it matches default)
+              btn.className = (size === selectedSize) ? `${baseClass} ${activeClass}` : `${baseClass} ${inactiveClass}`;
+              btn.textContent = size;
+              
+              sizeContainer.appendChild(btn);
+            });
+          } else {
             sizeWrapper.classList.add('hidden'); 
-        }
+          }
     }
 
     // DYNAMIC COLORS 
@@ -150,7 +153,7 @@ window.displayProduct = function(sid) {
                 }
 
                 // Click Selection Logic
-                btn.onclick = () => {
+                btn.addEventListener('click', () => {
                     selectedColor = colorName; // <--- UPDATE STATE
 
                     // Reset siblings
@@ -162,7 +165,7 @@ window.displayProduct = function(sid) {
                     // Activate clicked
                     btn.classList.remove('border-gray-300');
                     btn.classList.add('ring-2', 'ring-offset-2', 'ring-black', 'scale-110');
-                };
+                });
                 colorContainer.appendChild(btn);
             });
         } else {
@@ -202,7 +205,7 @@ window.displayProduct = function(sid) {
                 const imgDiv = document.createElement('div');
                 imgDiv.className = "aspect-square bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden";
                 const img = document.createElement('img');
-                img.src = getProductImage(item);
+                img.src = getProductImage(relItem);
                 img.className = "w-full h-full object-contain group-hover:scale-110 transition duration-300";
                 imgDiv.appendChild(img);
 

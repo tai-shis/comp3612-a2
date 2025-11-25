@@ -41,7 +41,7 @@
                     height: 0;
                 }
                 .check-box {
-                    @apply w-6 h-6 border border-gray-400 bg-white grid place-content-center;
+                    @apply w-6 h-6 border border-gray-400 bg-white grid place-content-center cursor-pointer ;
                 }
                 .check-x {
                     display: none;
@@ -51,7 +51,7 @@
                     display: block;
                 }
                 .check-row {
-                    @apply flex items-center gap-3 text-base px-2 py-2 rounded relative;
+                    @apply flex items-center gap-3 text-base px-2 py-2 rounded relative cursor-pointer hover:underline;
                 }
                 .check-hidden:focus + .check-box {
                     @apply ring-1 ring-blue-400;

@@ -14,9 +14,10 @@ function renderBrowseList(items) {
   const list = document.querySelector("#browse-list");
   const count = document.querySelector("#browse-results-count");
   
-  while (list.firstChild) {
-    list.removeChild(list.firstChild);
-  }
+  list.innerHTML = '';
+  // while (list.firstChild) {
+  //   list.removeChild(list.firstChild);
+  // }
 
   count.textContent = `${items.length} result${items.length === 1 ? "" : "s"}`;
 
@@ -33,7 +34,7 @@ function renderBrowseList(items) {
   for (const p of items) {
     const li = document.createElement("li");
     li.className =
-      "border border-gray-400 bg-white p-3 flex flex-col text-sm gap-2 transition hover:shadow-lg";
+      "border border-gray-400 bg-white p-3 flex flex-col text-sm gap-2 transition hover:shadow-lg cursor-pointer";
     li.dataset.sid = p.id;
 
     const linkButton = document.createElement("button");
@@ -41,7 +42,7 @@ function renderBrowseList(items) {
 
     const thumb = document.createElement("div");
     thumb.className =
-      "border border-gray-400 h-48 flex items-center justify-center bg-gray-100 text-xs text-gray-400 w-full";
+      "border border-gray-400 h-48 flex items-center justify-center bg-gray-100 text-xs text-gray-400 w-full cursor-pointer";
 
     const img = document.createElement("img");
     
@@ -68,7 +69,7 @@ function renderBrowseList(items) {
 
     const addButton = document.createElement("button");
     addButton.className =
-      "add-item text-xs border border-gray-500 px-3 py-1 hover:bg-gray-200 rounded transition";
+      "add-item text-xs border border-gray-500 px-3 py-1 hover:bg-gray-200 rounded transition cursor-pointer";
     addButton.textContent = "+";
 
     copy.appendChild(name);
