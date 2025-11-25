@@ -83,7 +83,7 @@ function renderBrowseList(items) {
   }
 }
 
-function renderActiveFilterChips() {
+export function renderActiveFilterChips() {
   const container = document.querySelector("#browse-active-filters");
   container.innerHTML = ""; 
 
@@ -317,6 +317,7 @@ export function loadCategory(gender, category) {
   }
 
   applyBrowseFilters(); 
+  renderActiveFilterChips();
   document.querySelectorAll("main > article").forEach(el => el.classList.add('hidden'));
   document.getElementById('browse').classList.remove('hidden');
   document.getElementById('browse').classList.add('block');

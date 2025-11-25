@@ -533,13 +533,13 @@ function setupBreadcrumbs(product) {
         else {
             console.error(`Navigation button not found for route: ${routeId}`);
         }
+        
     });
 
     breadCategory.addEventListener('click', (e) => {
         e.preventDefault();
-        import('./browse.js').then(module => {
-            module.loadCategory(product.gender, product.category);
-        });
+        
+        loadCategory(product.gender, product.category);
     });
 }
 
