@@ -181,7 +181,57 @@ window.displayProduct = function(sid) {
         const detailString = selectedSize ? `(${selectedSize})` : '';
         window.showToast(`Added ${quantity} x ${product.name} ${detailString} to cart!`);
     });
+    const relatedContainer = document.querySelector('.border-t .grid'); 
+        if(relatedContainer) {
+            // Clear static placeholders
+            while(relatedContainer.firstChild) relatedContainer.removeChild(relatedContainer.firstChild);
 
+            // Find related items
+            const related = items
+                .filter(i => i.category === product.category && i.id !== product.id)
+                .slice(0, 4); // Take up to 4
+
+            related.forEach(relItem => {
+                const card = document.createElement('div');
+                card.className = "flex flex-col gap-2 cursor-pointer group";
+                
+                // Image
+                const imgDiv = document.createElement('div');
+                imgDiv.className = "aspect-square bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden";
+                const img = document.createElement('img');
+                img.src = relItem.image ? relItem.image : "https://via.placeholder.com/150?text=No+Img";
+                img.className = "w-full h-full object-contain group-hover:scale-110 transition duration-300";
+                imgDiv.appendChild(img);
+
+                // Info
+                const infoDiv = document.createElement('div');
+                infoDiv.className = "flex justify-between text-sm font-medium";
+                
+                const titleSpan = document.createElement('span');
+                titleSpan.textContent = relItem.name;
+                const priceSpan = document.createElement('span');
+                priceSpan.textContent = `$${relItem.price}`;
+
+                infoDiv.appendChild(titleSpan);
+                infoDiv.appendChild(priceSpan);
+
+                // Add Btn 
+                const addBtn = document.createElement('button');
+                addBtn.className = "text-xs text-gray-500 underline text-left hover:text-blue-600";
+                addBtn.textContent = "+ View Details";
+
+                card.appendChild(imgDiv);
+                card.appendChild(infoDiv);
+                card.appendChild(addBtn);
+
+                // Click logic load this product
+                card.addEventListener('click', () => {
+                    window.displayProduct(relItem.id);
+                });
+
+                relatedContainer.appendChild(card);
+            });
+        }
     // Switch View
     document.querySelectorAll("main > article").forEach(page => {
         page.classList.add('hidden');
